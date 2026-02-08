@@ -166,15 +166,25 @@ TaskMasterPro/
 git clone  https://github.com/DhananjayMallik/Task-Management-System.git
 cd TaskManagementSystem
 
-🔧 Backend Setup
-Start backend
-# cd Server
-# npm install
-🖥 Frontend Setup
-# cd Client
-# npm install
-# npm start
-# npm run dev
+# Navigate to the Server folder
+cd Server
+
+# Install backend dependencies
+npm install
+
+# Start backend server
+npm start
+# Navigate to the Client folder
+cd Client
+
+# Install frontend dependencies
+npm install
+
+# Start the frontend (development mode)
+npm start
+
+# Alternatively, use Vite or other dev tools
+npm run dev
 
 🔑 Environment Variables
 
