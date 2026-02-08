@@ -167,16 +167,13 @@ git clone  https://github.com/DhananjayMallik/Task-Management-System.git
 cd TaskManagementSystem
 
 🔧 Backend Setup
+Start backend
 cd backend
 npm install
-
-Start backend
-npm run dev
-
 🖥 Frontend Setup
 cd frontend
 npm install
-npm start
+npm start/npm run dev
 
 🔑 Environment Variables
 
