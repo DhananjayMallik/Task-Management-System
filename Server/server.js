@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { dbConnection } from './src/config/db.js';
+import userRouter from './src/routes/userRoutes.js';
 dotenv.config();
 const app = express();
 app.use(cors());
@@ -15,6 +16,9 @@ dbConnection();
 app.get('/' , (req,res)=>{
     res.send("TaskMaster Pro Backend Running 🚀");
 });
+// all the useable routes
+app.use('/api/user', userRouter);
+
 app.listen(port , ()=>{
     console.log(`server running at : ${port}`);
 })
