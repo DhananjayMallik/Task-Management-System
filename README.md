@@ -168,12 +168,13 @@ cd TaskManagementSystem
 
 🔧 Backend Setup
 Start backend
-cd backend
-npm install
+# cd Server
+# npm install
 🖥 Frontend Setup
-cd frontend
-npm install
-npm start/npm run dev
+# cd Client
+# npm install
+# npm start
+# npm run dev
 
 🔑 Environment Variables
 
