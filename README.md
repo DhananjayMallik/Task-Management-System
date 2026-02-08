@@ -67,7 +67,7 @@ Assign/remove roles
 
 View all tasks
 
-Admin dashboard analytics
+update user details
 
 👥 Member Features
 
@@ -163,7 +163,7 @@ TaskMasterPro/
 
 ⚙️ Installation & Setup
 1. Clone the Repository
-git clone https://github.com/your-username/taskmaster-pro.git
+git clone  https://github.com/DhananjayMallik/Task-Management-System.git
 cd TaskManagementSystem
 
 🔧 Backend Setup
@@ -184,4 +184,4 @@ Create .env file in backend:
 
 MONGO_URL=your_mongodb_uri
 JWT_SECRET_KEY=your_secret_key
-PORT=4000
+PORT
