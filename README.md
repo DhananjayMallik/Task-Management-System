@@ -173,7 +173,7 @@ cd Server
 npm install
 
 # Start backend server
-npm start
+nodemon server.js
 # Navigate to the Client folder
 cd Client
 
@@ -181,7 +181,7 @@ cd Client
 npm install
 
 # Start the frontend (development mode)
-nodemon server.js
+npm start
 
 # Alternatively, use Vite or other dev tools
 npm run dev
