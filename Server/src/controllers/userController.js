@@ -182,3 +182,35 @@ export const AdminUpdateUser = async (req, res) => {
     })
   }
 }
+
+/*📌 Delete User : 
+1. First Get userid
+2. Then check user is exist or not
+3. if exist then delete that user
+4. if not exist show message user not found
+5. return the response message 📌*/
+export const deleteUser = async (req, res) => {
+  try {
+    // first request an id
+    const userId = req.params.id
+    // check user exist ot not
+    if (!userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'User Not Found! please try again',
+      })
+    }
+    // if user found
+    await User.findByIdAndDelete(userId)
+    return res.status(201).json({
+      success: true,
+      message: 'User Deleted Successfully',
+    })
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: 'Server Error',
+      error: error.message,
+    })
+  }
+}

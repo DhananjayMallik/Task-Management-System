@@ -1,5 +1,5 @@
 import express from 'express';
-import {registerUser,loginUser,AdminUpdateUser} from '../controllers/userController.js';
+import {registerUser,loginUser,AdminUpdateUser,deleteUser} from '../controllers/userController.js';
 import {authMiddleware} from '../middleware/authMiddleware.js';
 import{adminOnly} from '../middleware/adminMiddleware.js';
 
@@ -25,4 +25,6 @@ router.get('/adminProfile' , authMiddleware , adminOnly , (req,res)=>{
 });
 // admin can only update the details of any user
 router.put('/update-User/:id',authMiddleware , adminOnly , AdminUpdateUser);
+// delete user here
+router.delete('/delete/:id',deleteUser);
 export default router;

@@ -55,6 +55,8 @@ Password hashing
 
 JWT Authentication
 
+Log Out User
+
 Role-based Access (Admin/Member)
 
 👨‍💼 Admin Features
