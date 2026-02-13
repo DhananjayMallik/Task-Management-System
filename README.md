@@ -79,9 +79,7 @@ Manage personal tasks
 
 Update task status
 
-Add comments
-
-View notifications
+Only update own details
 
 📌 Task Management
 
