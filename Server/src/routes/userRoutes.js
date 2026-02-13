@@ -7,7 +7,7 @@ const router = express.Router();
 // first register user schema validation then post the user details
 router.post('/register',registerUser);
 router.post('/login',loginUser);
-// login in user details
+// login in user details through token verification 
 router.get('/profileInfo',authMiddleware, (req,res)=>{
     res.json({
         success : true,
@@ -15,7 +15,7 @@ router.get('/profileInfo',authMiddleware, (req,res)=>{
         user : req.user // id , role , email
     });
 });
-// for admin access only
+// for admin access only 
 router.get('/adminProfile' , authMiddleware , adminOnly , (req,res)=>{
     res.json({
         success : true,
