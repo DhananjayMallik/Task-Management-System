@@ -1,16 +1,169 @@
-# React + Vite
+Role-Based Authentication Frontend (React.js + Context API + Tailwind CSS)
+ # UI Screenshot
+![alt text](image.png)
+![alt text](image-1.png)
+🚀 Project Features
+🔐 Authentication
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+User Registration
 
-Currently, two official plugins are available:
+Login / Logout
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+JWT Token Handling
 
-## React Compiler
+Auto Redirect Based on Role
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+👑 Role Management
 
-## Expanding the ESLint configuration
+Admin Dashboard
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Member Dashboard
+
+Only Admin can:
+
+View all users
+
+Update user
+
+Delete user
+
+🛡 Protected Routing
+
+Admin cannot access member pages
+
+Member cannot access admin pages
+
+Guest cannot access any dashboard
+
+📁 Project Folder Structure
+src/
+│── api/
+│   └── axiosInstance.js
+│
+│── context/
+│   └── AuthContext.jsx
+│
+│── routes/
+│   ├── AppRoutes.jsx
+│   └── ProtectedRoutes.jsx
+│
+│── page/
+│   ├── Auth/
+│   │   ├── Login.jsx
+│   │   └── SignUp.jsx
+│   │
+│   ├── Admin/
+│   │   ├── AdminDashboard.jsx
+│   │   ├── ManageUsers.jsx
+│   │   └── UpdateUser.jsx
+│   │
+│   └── Member/
+│       └── MemberDashboard.jsx
+│
+│── assets/
+│   └── images/
+│       └── bgImage.jpg
+│
+└── App.jsx
+
+🧠 Workflow Explained
+1️⃣ AuthContext.jsx — Manages Authentication State
+
+What it stores:
+
+token
+
+role
+
+loginUser()
+
+logoutUser()
+
+Workflow:
+
+When user logs in → save token + role in localStorage
+
+Provide authentication globally
+
+Used to protect routes and dashboards
+
+2️⃣ ProtectedRoutes.jsx — Protect Admin & Member Routes
+
+Checks:
+
+If token does NOT exist → redirect /login
+
+If role is NOT allowed → redirect /login
+
+If everything is correct → render component
+
+✔ Admin cannot open member page
+✔ Member cannot open admin page
+✔ Guests cannot open any protected page
+
+3️⃣ AppRoutes.jsx — Defines All Routes
+/login
+/signup
+/admin-dashboard       (admin only)
+/admin/manage-users    (admin only)
+/admin/update-user/:id (admin only)
+/member-dashboard      (member only)
+
+
+Uses:
+
+<ProtectedRoutes allowrole="admin">...</ProtectedRoutes>
+
+4️⃣ axiosInstance.js — Preconfigured Axios
+
+Base URL: http://localhost:4000/api/user
+
+Automatically attaches JWT Token in headers
+
+Used in Login, Signup, Manage Users, Update User
+
+5️⃣ Login.jsx — Authenticates User
+
+Workflow:
+
+User enters email & password
+
+Request: POST /login
+
+Response returns:
+
+token
+role
+
+
+Save token + role using loginUser()
+
+Redirect based on role:
+
+admin → /admin-dashboard
+
+member → /member-dashboard
+
+6️⃣ SignUp.jsx — Registers User
+
+Workflow:
+
+User enters name, email, password, role
+
+POST /register
+
+On success → redirect /login
+
+UI: Glassmorphism + background image
+
+7️⃣ AdminDashboard.jsx — Admin Panel
+
+Admin can:
+✔ View All Users
+✔ Delete User
+✔ Update User
+✔ Navigate to ManageUsers.jsx
+
+8️⃣ MemberDashboard.jsx — Member Panel
+
+Simple dashboard for logged-in users.
