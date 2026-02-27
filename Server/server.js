@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { dbConnection } from './src/config/db.js';
 import userRouter from './src/routes/userRoutes.js';
+import taskRouter from './src/routes/taskRoutes.js';
 dotenv.config();
 const app = express();
 app.use(cors());
@@ -18,7 +19,8 @@ app.get('/', (req, res) => {
 })
 // all the useable routes for User
 app.use('/api/user', userRouter);
-
+// Task routes
+app.use("/api/task", taskRouter);
 app.listen(port, () => {
   console.log(`server running at : ${port}`)
 });

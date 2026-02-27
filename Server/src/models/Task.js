@@ -1,38 +1,38 @@
-// ---------------------------------------------------------------
-// 📝 Task Model - Stores all task-related information in MongoDB
-// ---------------------------------------------------------------
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-// Creating a schema to define how tasks data will be stored
 const taskSchema = new mongoose.Schema(
   {
     title: {
-      type: string,
+      type: String,
       required: true,
       trim: true,
     },
+
     description: {
-      type: string,
+      type: String,
       required: true,
       trim: true,
     },
+
     status: {
-      type: string,
-      enum: ['pending', 'in-progress', 'completed'], // allowed values
-      default: 'pending', // by default values assigned
+      type: String,
+      enum: ["pending", "in-progress", "completed"],
+      default: "pending",
     },
-    // User assigned to this task
+
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Reference to User model
+      ref: "User",
+      required: true,
     },
-    // User who created this task
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Reference to User model
+      ref: "User",
+      required: true, // ✅ This is fine because controller sets it automatically
     },
   },
   { timestamps: true }
-)
-// Exporting the model for used in controllers and routes
-export default mongoose.model('Task', taskSchema)
+);
+
+export default mongoose.model("Task", taskSchema);
