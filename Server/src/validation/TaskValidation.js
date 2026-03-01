@@ -16,7 +16,7 @@ export const createTaskSchema = Yup.object({
 });
 
 // Update Task Schema
-export const updateTask = Yup.object({
+export const updateTaskSchema = Yup.object({
   title: Yup.string(),
 
   description: Yup.string(),
