@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateTask ,GetMyTasks, UpdateTaskStatus, getAllTasks} from "../controllers/TaskController.js";
+import { CreateTask ,GetMyTasks, UpdateTaskStatus, deleteTaskOnlyAdmin, getAllTasks} from "../controllers/TaskController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { adminOnly } from "../middleware/adminMiddleware.js";
 
@@ -13,4 +13,6 @@ router.get('/getMyTask' , authMiddleware , GetMyTasks);
 router.get("/getAllTasks" , authMiddleware , adminOnly, getAllTasks);
 // admin + member
 router.put('/updateStatus/:id',authMiddleware , UpdateTaskStatus);
+// only admin can delete the task
+router.delete("/deleteTask/:id",authMiddleware,adminOnly,deleteTaskOnlyAdmin);
 export default router;

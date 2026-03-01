@@ -141,3 +141,26 @@ export const UpdateTaskStatus = async (req, res) => {
     });
   }
 };
+/* Delete Task : Only Admin Can delete the assigned task  */
+export const deleteTaskOnlyAdmin = async(req,res) => {
+  try {
+    const taskId = req.params.id;
+    if(!taskId){
+      return res.status(402).json({
+        success : false,
+        message : "Task Not Found"
+      });
+    }
+    await Task.findByIdAndDelete(taskId);
+    return res.status(201).json({
+      success : true,
+      message : "Task Deleted Successfully"
+    });
+  } catch (error) {
+     return res.status(404).json({
+      success : false,
+      errors : error.errors
+     });
+  }
+}
+/* Assigned Task : Only Admin Can Assigned the task to member */
