@@ -2,8 +2,9 @@ import Task from '../models/Task.js'
 import {
   createTaskSchema,
   updateTaskSchema,
+  assignTaskSchema
 } from '../validation/TaskValidation.js'
-
+import User from '../models/User.js';
 // get my tasks only those that have been assigned : only member assigning task details
 export const GetMyTasks = async (req, res) => {
   try {
@@ -41,13 +42,11 @@ export const CreateTask = async (req, res) => {
     // Validate schema
     await createTaskSchema.validate(req.body, { abortEarly: false })
 
-    const { title, description, status, assignedTo } = req.body
+    const { title, description} = req.body
 
     const task = new Task({
       title,
       description,
-      status,
-      assignedTo,
       createdBy: req.user._id, // Auto-set
     })
 
@@ -112,13 +111,14 @@ export const UpdateTaskStatus = async (req, res) => {
   /* if loggedInUser is admin then only you can update anyone task otherwise you can update only your own task */
   const loggedInUserId = req.user._id.toString();
   const assignedUserId = task.assignedTo ? task.assignedTo.toString() : null;
-     if(req.user.role !== 'Admin' && assignedUserId !==loggedInUserId){
+    // Non-admin cannot update someone else’s task
+    if (req.user.role !== "admin" && assignedUser !== loggedInUserId) {
       return res.status(401).json({
-        success : false,
-        message : "You cannot update any other task"
+        success: false,
+        message: "You cannot update another user's task",
       });
-     }
-    // if loggedinUser is member  then only Update his own task status 
+    }
+
     task.status = req.body.status;
     await task.save();
     // return response after update status
@@ -163,4 +163,50 @@ export const deleteTaskOnlyAdmin = async(req,res) => {
      });
   }
 }
+
 /* Assigned Task : Only Admin Can Assigned the task to member */
+/* ---------------------------------------------------
+   6) Assign Task to Member (ADMIN ONLY)
+--------------------------------------------------- */
+export const AssignedTaskOnlyAdmin = async (req, res) => {
+  try {
+    await assignTaskSchema.validate(req.body, { abortEarly: false });
+
+    const { id } = req.params;
+    const { assignedTo } = req.body;
+
+    // Check task exists
+    const task = await Task.findById(id);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task Not Found",
+      });
+    }
+
+    // Check member exists
+    const user = await User.findById(assignedTo);
+    if (!user || user.role !== "member") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Member ID",
+      });
+    }
+
+    // Assign task
+    task.assignedTo = assignedTo;
+    // task.status = "Assigned";
+    await task.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Task Assigned Successfully",
+      task,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      errors: error.errors || error.message,
+    });
+  }
+};

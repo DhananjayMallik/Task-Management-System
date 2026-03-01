@@ -22,7 +22,9 @@ const Login = () => {
         password,
       });
       // sent it to the authcontext hook to save token and role into localStorage
+      // inside handleLogin in Login.jsx
       loginUser(res.data.token, res.data.role);
+
       // role based login system
       if (res.data.role == "admin") navigate("/admin-dashboard");
       else navigate("/member-dashboard");
@@ -32,55 +34,53 @@ const Login = () => {
     }
   };
   return (
-   <div 
-  className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
-  style={{ backgroundImage: `url(${image})` }}
->
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${image})` }}
+    >
+      {/* Glassmorphism Card */}
+      <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md border border-white/30">
+        <h2 className="text-center text-white text-3xl font-bold mb-6 drop-shadow-md">
+          Login
+        </h2>
 
-  {/* Glassmorphism Card */}
-  <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md border border-white/30">
-    
-    <h2 className="text-center text-white text-3xl font-bold mb-6 drop-shadow-md">
-      Login
-    </h2>
+        <form onSubmit={handleLogin} className="space-y-4">
+          {/* Email */}
+          <input
+            type="email"
+            placeholder="Enter Email"
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
+          />
 
-    <form onSubmit={handleLogin} className="space-y-4">
-      
-      {/* Email */}
-      <input
-        type="email"
-        placeholder="Enter Email"
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
-      />
+          {/* Password */}
+          <input
+            type="password"
+            placeholder="Enter Password"
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
+          />
 
-      {/* Password */}
-      <input
-        type="password"
-        placeholder="Enter Password"
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
-      />
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-md"
+          >
+            Login
+          </button>
+        </form>
 
-      {/* Button */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-md"
-      >
-        Login
-      </button>
-    </form>
-
-    <p className="mt-4 text-center text-white drop-shadow-md">
-      Don't have an account?{" "}
-      <a href="/signup" className="text-yellow-300 font-semibold hover:underline">
-        Sign Up
-      </a>
-    </p>
-
-  </div>
-</div>
-
+        <p className="mt-4 text-center text-white drop-shadow-md">
+          Don't have an account?{" "}
+          <a
+            href="/signup"
+            className="text-yellow-300 font-semibold hover:underline"
+          >
+            Sign Up
+          </a>
+        </p>
+      </div>
+    </div>
   );
 };
 

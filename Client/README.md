@@ -66,6 +66,10 @@ src/
 │
 └── App.jsx
 
+# install Dependencies
+# npm install
+# run project 
+# npm run dev for vite
 🧠 Workflow Explained
 1️⃣ AuthContext.jsx — Manages Authentication State
 

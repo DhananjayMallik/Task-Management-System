@@ -1,25 +1,26 @@
 import { useState, createContext, useContext } from "react";
 
 /* 
-1. Auth Context save a user token and role
-2. Here we save our login user and logout user token and role
-3. login user: (token , role) saved in localStorage 
-4. logout user: removes (token , role) from localStorage
+Auth Context:
+1. Saves user token, role, and user info
+2. loginUser: saves token, role, and user into localStorage & state
+3. logoutUser: removes token, role, and user
 */
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // get the token and role of the user
+  // Initialize auth state from localStorage
   const [auth, setAuth] = useState({
     token: localStorage.getItem("token") || null,
-    role: localStorage.getItem("role") || null
+    role: localStorage.getItem("role") || null,
   });
 
-  // login function 
+  // login function
   const loginUser = (token, role) => {
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
+    
     setAuth({ token, role });
   };
 
@@ -27,7 +28,8 @@ export const AuthProvider = ({ children }) => {
   const logoutUser = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    setAuth({ token: null, role: null });
+
+    setAuth({ token: null, role: null});
   };
 
   return (

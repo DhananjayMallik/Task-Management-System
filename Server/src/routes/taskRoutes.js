@@ -1,18 +1,21 @@
 import express from "express";
-import { CreateTask ,GetMyTasks, UpdateTaskStatus, deleteTaskOnlyAdmin, getAllTasks} from "../controllers/TaskController.js";
+import { CreateTask ,GetMyTasks, UpdateTaskStatus, deleteTaskOnlyAdmin, getAllTasks,AssignedTaskOnlyAdmin} from "../controllers/TaskController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { adminOnly } from "../middleware/adminMiddleware.js";
 
 const router = express.Router();
 
-// Admin can create task
-router.post("/createTask", authMiddleware, adminOnly, CreateTask);
-// only member
+
+// Admin → Create task
+router.post("/createTask", authMiddleware , CreateTask);
+// Member → Get his own Assigned Tasks tasks
 router.get('/getMyTask' , authMiddleware , GetMyTasks);
-// only admin
+// only admin manage all the tasks
 router.get("/getAllTasks" , authMiddleware , adminOnly, getAllTasks);
-// admin + member
+// update status -> admin + member
 router.put('/updateStatus/:id',authMiddleware , UpdateTaskStatus);
-// only admin can delete the task
+// only admin can delete the existing task
 router.delete("/deleteTask/:id",authMiddleware,adminOnly,deleteTaskOnlyAdmin);
+// Admin → Assign the Task to member
+router.put("/assign/:id", authMiddleware, AssignedTaskOnlyAdmin);
 export default router;

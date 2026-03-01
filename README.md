@@ -1,195 +1,144 @@
-📘 TASKMASTER PRO – Team Task Management System
-
-A complete MERN Stack team task management platform designed for teams to track tasks, manage projects, and collaborate effectively.
-Includes Admin/member roles, analytics dashboard, project management, task tracking, comments, file uploads, and activity logs.
-
-🚀 Live Demo
-
-(Add link when deployed)
-
-📸 Screenshots
-
-(Add screenshots after building UI)
-
-📑 Table of Contents
-
-About
-
-Features
-
-Tech Stack
-
-Folder Structure
-
-Installation & Setup
-
-Environment Variables
-
-API Endpoints
-
-Validation (Yup)
-
-Future Enhancements
-
-📘 About the Project
-
-TaskMaster Pro is a full-featured MERN stack project designed for real-world use cases such as team collaboration, project planning, and workflow tracking.
-
-It includes a modern UI, secure backend, authentication, and dashboards.
-
-You can use this project for:
-
-Internship submissions
-
-
-Company task management
-
-MERN stack learning
-
-⭐ Features
-🔐 Authentication
-
-Register & Login
-
-Password hashing
-
-JWT Authentication
-
-Log Out User
-
-Role-based Access (Admin/Member)
-
-👨‍💼 Admin Features
-
-Create projects
-
-Add team members
-
-Assign/remove roles
-
-View all tasks
-
-update user details
-
-👥 Member Features
-
-View assigned projects
-
-Manage personal tasks
-
-Update task status
-
-Only update own details
-
-📌 Task Management
-
-Create/update/delete tasks
-
-Assign tasks to users
-
-Status flow: TODO → IN PROGRESS → DONE
-
-Priority levels
-
-Deadline support
-
-Subtasks
-
-Comments & attachments
-
-Activity logs
-
-📊 Dashboard
-
-Total users
-
-Total tasks
-
-Project count
-
-Tasks by priority
-
-Tasks by status
-
-Recent activity
-
-🛠 Tech Stack
-Frontend
-
-React.js
-
-Tailwind CSS
-
-Axios
-
-React Router
-
-
-Backend
-
-Node.js
-
-Express.js
-
-MongoDB + Mongoose
-
-JSON Web Token (JWT)
-
-
-
-Yup (validations)
-
-Bcrypt.js
-
-📁 Folder Structure
-TaskMasterPro/
-│
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── validations/
-│   ├── server.js
-│   └── config/
-│
-└── frontend/
-    ├── src/
-    ├── components/
-    ├── pages/
-    ├── context/
-    ├── hooks/
-    └── App.js
-
-⚙️ Installation & Setup
-1. Clone the Repository
-git clone  https://github.com/DhananjayMallik/Task-Management-System.git
+# 📝 Task Management System  
+A full-stack role-based Task Management System where **Admin** manages users & tasks, and **Members** can view/update their assigned tasks.
+
+This project includes:
+- User Authentication (Register/Login)
+- Role-based Authorization (Admin / Member)
+- Admin Dashboard
+- Member Dashboard
+- Task Assignment & Management
+- Complete CRUD operations for Users & Tasks
+
+---
+## Screenshots 
+![alt text](<Screenshot 2026-02-13 173638.png>)
+![ ](<Screenshot 2026-02-13 173654.png>)
+## 🔥 Features
+
+### 🔐 Authentication
+- User Registration
+- Login with Email & Password
+- JWT-based Authentication
+- Role-based Authorization (Admin / Member)
+
+---
+
+## 👤 Member Features
+After login, if user is **Member**, he will see:
+
+### ✔ Member Dashboard
+- View personal information  
+- View all tasks assigned to him  
+- Update task status  
+- Cannot delete/update other users  
+- Cannot create tasks  
+
+---
+
+## 👑 Admin Features
+After login, if user is **Admin**, he will see:
+
+### ✔ User Management
+- View all users  
+- Update user details  
+- Delete any user  
+- View user details along with assigned tasks  
+
+### ✔ Task Management
+- Create a new task  
+- Assign task to any member  
+- Update task details  
+- Update task status  
+- Delete tasks  
+- View all tasks in the system  
+
+---
+
+## 🏗 Project Flow
+User Register
+↓
+User Login (Role-Based Authentication)
+↓
+┌─────────────┐ ┌─────────────┐
+│ Member │ │ Admin │
+└─────────────┘ └─────────────┘
+↓ ↓
+Member Dashboard Admin Dashboard
+↓ ↓
+View Member Info Manage Users
+View Assigned Tasks Create Task
+Update Task Status Assign Task
+Manage All Tasks
+Update Task Status
+Delete Task
+
+---
+
+## 🗂 Folder Structure (Backend)
+## Frontend 
+![alt text](image.png)
+## Backend 
+![alt text](image-1.png)
+
+---
+
+## 🛠 Tech Stack
+
+### **Backend**
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- JWT Authentication
+- Yup/ for Validation
+
+### **Frontend** (optional)
+- React.js
+- Axios
+- Context API / 
+- Tailwind / CSS
+
+---
+
+## 📌 API Endpoints
+
+### 🔐 Authentication
+| Method | Endpoint       | Description |
+|--------|----------------|-------------|
+| POST   | `/api/register` | Register a new user |
+| POST   | `/api/login`    | Login user |
+
+---
+
+### 👤 Member APIs
+| Method | Endpoint                | Description |
+|--------|-------------------------|-------------|
+| GET    | `/api/tasks/my-tasks`    | Get logged-in member tasks |
+| PUT  | `/api/tasks/:id/status` | Update task status (assigned to the member) |
+
+---
+
+### 👑 Admin APIs
+| Method | Endpoint                  | Description |
+|--------|---------------------------|-------------|
+| GET    | `/api/users`               | Get all users |
+| PUT    | `/api/users/:id`           | Update user |
+| DELETE | `/api/users/:id`           | Delete user |
+| POST   | `/api/tasks`               | Create task |
+| GET    | `/api/tasks`               | Get all tasks |
+| PUT  | `/api/tasks/assign/:id`    | Assign task to member |
+| DELETE | `/api/tasks/:id`           | Delete task |
+
+---
+
+## 🚀 How to Run the Project Locally
+
+### 1️⃣ Clone Repo
+```bash
+git clone https://github.com/DhananjayMallik/Task-Management-System.git
 cd TaskManagementSystem
-
-# Navigate to the Server folder
-cd Server
-
-# Install backend dependencies
 npm install
-
-# Start backend server
-nodemon server.js
-# Navigate to the Client folder
-cd Client
-
-# Install frontend dependencies
-npm install
-
-# Start the frontend (development mode)
-npm start
-
-# Alternatively, use Vite or other dev tools
-npm run dev
-
-🔑 Environment Variables
-
-Create .env file in backend:
-
-MONGO_URL=your_mongodb_uri
-JWT_SECRET_KEY=your_secret_key
+MONGO_URI=your_mongo_url
+JWT_SECRET=your_jwt_secret
 PORT
+npm run dev for vite
+npm start without vite

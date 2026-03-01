@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const taskSchema = new mongoose.Schema(
   {
@@ -16,23 +16,23 @@ const taskSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "in-progress", "completed"],
-      default: "pending",
+      enum: ['pending', 'in-progress', 'completed'],
+      default: 'pending',
     },
 
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: 'User',
+      default: null,
     },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true, // ✅ This is fine because controller sets it automatically
     },
   },
   { timestamps: true }
-);
+)
 
-export default mongoose.model("Task", taskSchema);
+export default mongoose.model('Task', taskSchema)
