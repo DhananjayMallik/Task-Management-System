@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 // Admin → Create task
-router.post("/createTask", authMiddleware , CreateTask);
+router.post("/createTask", authMiddleware ,adminOnly, CreateTask);
 // Member → Get his own Assigned Tasks tasks
 router.get('/getMyTask' , authMiddleware , GetMyTasks);
 // only admin manage all the tasks

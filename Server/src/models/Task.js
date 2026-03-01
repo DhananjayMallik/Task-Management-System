@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-
+// here we write our Task database schema
 const taskSchema = new mongoose.Schema(
   {
     title: {

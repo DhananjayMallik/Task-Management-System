@@ -97,7 +97,8 @@ export const UpdateTaskStatus = async (req, res) => {
     // Validate updateTaskSchema
     await updateTaskSchema.validate(req.body, { abortEarly: false });
 
-    // destructuring id from body through request
+    // destructuring id from body through request 
+    // in that task id we want to update the task status 
     const {id} = req.params;
 
     // Find Task
@@ -112,7 +113,7 @@ export const UpdateTaskStatus = async (req, res) => {
   const loggedInUserId = req.user._id.toString();
   const assignedUserId = task.assignedTo ? task.assignedTo.toString() : null;
     // Non-admin cannot update someone else’s task
-    if (req.user.role !== "admin" && assignedUser !== loggedInUserId) {
+    if (req.user.role !== "admin" && assignedUserId !== loggedInUserId) {
       return res.status(401).json({
         success: false,
         message: "You cannot update another user's task",
@@ -144,7 +145,8 @@ export const UpdateTaskStatus = async (req, res) => {
 /* Delete Task : Only Admin Can delete the assigned task  */
 export const deleteTaskOnlyAdmin = async(req,res) => {
   try {
-    const taskId = req.params.id;
+    const taskId = req.params.id; // fetch that task id that you want to deleted in your history
+    // check task exist or not
     if(!taskId){
       return res.status(402).json({
         success : false,

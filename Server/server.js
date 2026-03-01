@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 })
 // all the useable routes for User
 app.use('/api/user', userRouter);
-// Task routes
+// Task routes for useable task controller
 app.use("/api/task", taskRouter);
 app.listen(port, () => {
   console.log(`server running at : ${port}`)
