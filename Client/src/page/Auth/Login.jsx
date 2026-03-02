@@ -23,7 +23,10 @@ const Login = () => {
       });
       // sent it to the authcontext hook to save token and role into localStorage
       // inside handleLogin in Login.jsx
-      loginUser(res.data.token, res.data.role);
+      const { token, user } = res.data;
+
+      // Save into AuthContext
+      loginUser(token, user.role, user);
 
       // role based login system
       if (res.data.role == "admin") navigate("/admin-dashboard");

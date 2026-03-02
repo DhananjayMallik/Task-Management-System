@@ -76,70 +76,77 @@ export const registerUser = async (req, res) => {
     */
 export const loginUser = async (req, res) => {
   try {
-    // Validate login details
-    await loginSchema.validate({ body: req.body }, { abortEarly: false })
+    await loginSchema.validate({ body: req.body }, { abortEarly: false });
 
-    const { email, password } = req.body
+    const { email, password } = req.body;
 
-    // Check user
-    const user = await User.findOne({ email })
+    // find user
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: 'User Not found in that email',
-      })
+        message: "User not found"
+      });
     }
 
-    // Check password
-    const passwordMatched = await bcrypt.compare(password, user.password)
+    // check password
+    const passwordMatched = await bcrypt.compare(password, user.password);
     if (!passwordMatched) {
       return res.status(403).json({
         success: false,
-        message: 'Invalid Password! please retry again',
-      })
+        message: "Invalid password"
+      });
     }
 
-    // Generate token
+    // generate token
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: '1h' }
-    )
+      { expiresIn: "1h" }
+    );
 
-    // ROLE-BASED LOGIN RESPONSE
-    if (user.role === 'admin') {
+    // 🎯 ROLE-BASED LOGIN RESPONSE
+    if (user.role === "admin") {
       return res.status(200).json({
         success: true,
-        message: 'Welcome to my Admin Panel',
-        role: 'admin',
+        message: "Welcome Admin",
+        role: "admin",
         token,
-      })
-    } else {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
+    }
+
+    if (user.role === "member") {
       return res.status(200).json({
         success: true,
-        message: 'Welcome to my Member Panel',
-        role: 'member',
+        message: "Welcome Member",
+        role: "member",
         token,
-      })
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
     }
   } catch (error) {
-    // Validation error
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation Error',
-        errors: error.errors,
-      })
-    }
-
-    // Other errors
     return res.status(500).json({
       success: false,
-      message: 'Server error',
+      message: "Server error",
       error: error.message,
-    })
+    });
   }
-}
+};
 /*📌
 Update User : 
 only Admin can update existing user details. 
