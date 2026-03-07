@@ -8,10 +8,8 @@ const MemberDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch member tasks
   const fetchMyTasks = async () => {
     try {
-
       const res = await axiosInstance.get("/task/getMyTask");
 
       const myTasks =
@@ -34,131 +32,174 @@ const MemberDashboard = () => {
     fetchMyTasks();
   }, []);
 
-  // Update task status
-const updateStatus = async (taskId, newStatus) => {
-  try {
-      // fetch that task that i want to update the status 
-    const res = await axiosInstance.put(
-      `/task/updateStatus/${taskId}`,
-      // here we sent a new Status of that task
-      { status: newStatus }
+  const updateStatus = async (taskId, newStatus) => {
+    try {
+
+      const res = await axiosInstance.put(
+        `/task/updateStatus/${taskId}`,
+        { status: newStatus }
+      );
+
+      console.log("Status Updated:", res.data);
+
+      fetchMyTasks();
+
+    } catch (error) {
+
+      console.log(
+        "Status update error:",
+        error.response?.data || error.message
+      );
+
+    }
+  };
+
+  if (!auth?.token) {
+    return (
+      <div className="flex items-center justify-center h-screen text-xl font-semibold">
+        Please Login
+      </div>
     );
-
-    console.log("Status Updated:", res.data);
-
-    fetchMyTasks();
-
-  } catch (error) {
-
-    console.log(
-      "Status update error:",
-      error.response?.data || error.message
-    );
-
   }
-};
-
-  if (!auth?.token) return <p className="text-center mt-10">Please Login</p>;
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="min-h-screen bg-gray-100 p-8">
 
-      {/* Member Info */}
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-
-        <h1 className="text-3xl font-bold text-blue-700 mb-4">
-          Member Dashboard
-        </h1>
-
-        <p className="text-lg">
-          <strong>Name:</strong> {auth?.user?.name}
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg p-6 mb-8">
+        <h1 className="text-3xl font-bold">Member Dashboard</h1>
+        <p className="text-sm opacity-80 mt-1">
+          Manage and track your assigned tasks
         </p>
-
-        <p className="text-lg">
-          <strong>Email:</strong> {auth?.user?.email}
-        </p>
-
-        <p className="text-lg">
-          <strong>Role:</strong> {auth?.user?.role}
-        </p>
-
       </div>
 
-      {/* Tasks Table */}
-
-      <div className="bg-white shadow-md rounded-lg p-6">
-
-        <h2 className="text-2xl font-semibold mb-4 text-gray-700">
-          My Assigned Tasks
+      {/* User Info Card */}
+      <div className="bg-white shadow-md rounded-xl p-6 mb-8 border">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          Profile Information
         </h2>
 
+        <div className="grid md:grid-cols-3 gap-4 text-gray-700">
+
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-500">Name</p>
+            <p className="font-semibold">{auth?.user?.name}</p>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-500">Email</p>
+            <p className="font-semibold">{auth?.user?.email}</p>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <p className="text-sm text-gray-500">Role</p>
+            <p className="font-semibold capitalize">{auth?.user?.role}</p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Tasks Section */}
+      <div className="bg-white shadow-md rounded-xl p-6 border">
+
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold text-gray-700">
+            My Assigned Tasks
+          </h2>
+
+          <span className="bg-blue-100 text-blue-700 text-sm px-3 py-1 rounded-full">
+            {tasks.length} Tasks
+          </span>
+        </div>
+
         {loading ? (
-          <p>Loading Tasks...</p>
+          <p className="text-gray-500">Loading Tasks...</p>
         ) : tasks.length === 0 ? (
-          <p>No Tasks Assigned</p>
+          <p className="text-gray-500">No Tasks Assigned</p>
         ) : (
 
-          <table className="w-full border border-gray-300">
+          <div className="overflow-x-auto">
 
-            <thead className="bg-blue-600 text-white">
-              <tr>
-                <th className="p-3 border">Title</th>
-                <th className="p-3 border">Description</th>
-                <th className="p-3 border">Status</th>
-                <th className="p-3 border">Change Status</th>
-              </tr>
-            </thead>
+            <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
 
-            <tbody>
-  {tasks.map((task) => (
-    <tr key={task._id} className="text-center hover:bg-gray-100">
+              <thead className="bg-gray-100 text-gray-700">
+                <tr>
+                  <th className="p-3 text-left">Title</th>
+                  <th className="p-3 text-left">Description</th>
+                  <th className="p-3 text-center">Status</th>
+                  <th className="p-3 text-center">Change Status</th>
+                </tr>
+              </thead>
 
-      <td className="border p-3">
-        {task.title}
-      </td>
+              <tbody>
 
-      <td className="border p-3">
-        {task.description}
-      </td>
+                {tasks.map((task) => (
 
-      <td className="border p-3">
-       <span
-  className={`px-2 py-1 rounded text-white
-  ${
-    task.status === "pending"
-      ? "bg-red-500"
-      : task.status === "in-progress"
-      ? "bg-yellow-500"
-      : "bg-green-500"
-  }`}
->
-  {task.status === "pending"
-    ? "Pending"
-    : task.status === "in-progress"
-    ? "In Progress"
-    : "Completed"}
-</span>
-      </td>
+                  <tr
+                    key={task._id}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
 
-      <td className="border p-3">
-        <select
-  className="border rounded p-1"
-  value={task.status}
-  onChange={(e) => updateStatus(task._id, e.target.value)}
->
+                    <td className="p-3 font-medium text-gray-700">
+                      {task.title}
+                    </td>
 
-  <option value="pending">Pending</option>
-  <option value="in-progress">In Progress</option>
-  <option value="completed">Completed</option>
+                    <td className="p-3 text-gray-600">
+                      {task.description}
+                    </td>
 
-</select>
-      </td>
+                    {/* Status Badge */}
 
-    </tr>
-  ))}
-</tbody>
+                    <td className="p-3 text-center">
 
-          </table>
+                      <span
+                        className={`px-3 py-1 text-sm rounded-full font-medium
+                        ${
+                          task.status === "pending"
+                            ? "bg-red-100 text-red-600"
+                            : task.status === "in-progress"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-green-100 text-green-600"
+                        }`}
+                      >
+                        {task.status === "pending"
+                          ? "Pending"
+                          : task.status === "in-progress"
+                          ? "In Progress"
+                          : "Completed"}
+                      </span>
+
+                    </td>
+
+                    {/* Dropdown */}
+
+                    <td className="p-3 text-center">
+
+                      <select
+                        className="border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={task.status}
+                        onChange={(e) =>
+                          updateStatus(task._id, e.target.value)
+                        }
+                      >
+
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+
+                      </select>
+
+                    </td>
+
+                  </tr>
+
+                ))}
+
+              </tbody>
+
+            </table>
+
+          </div>
 
         )}
 

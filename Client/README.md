@@ -2,6 +2,7 @@ Role-Based Authentication Frontend (React.js + Context API + Tailwind CSS)
  # UI Screenshot
 ![alt text](image.png)
 ![alt text](image-1.png)
+![alt text](image-2.png)
 🚀 Project Features
 🔐 Authentication
 

@@ -91,44 +91,47 @@ export const getAllTasks = async (req, res) => {
   }
 }
 
-// update task status Admin + Member
 export const UpdateTaskStatus = async (req, res) => {
   try {
-    // Validate updateTaskSchema
+
     await updateTaskSchema.validate(req.body, { abortEarly: false });
 
-    // destructuring id from body through request 
-    // in that task id we want to update the task status 
-    const {id} = req.params;
+    const { id } = req.params;
 
-    // Find Task
     const task = await Task.findById(id);
+
     if (!task) {
       return res.status(404).json({
         success: false,
         message: "Task Not Found!",
       });
     }
-  /* if loggedInUser is admin then only you can update anyone task otherwise you can update only your own task */
-  const loggedInUserId = req.user._id.toString();
-  const assignedUserId = task.assignedTo ? task.assignedTo.toString() : null;
-    // Non-admin cannot update someone else’s task
+
+    const loggedInUserId = req.user._id.toString();
+    const assignedUserId = task.assignedTo
+      ? task.assignedTo.toString()
+      : null;
+
+    // Only admin or assigned member can update
     if (req.user.role !== "admin" && assignedUserId !== loggedInUserId) {
-      return res.status(401).json({
+      return res.status(403).json({
         success: false,
         message: "You cannot update another user's task",
       });
     }
 
     task.status = req.body.status;
+
     await task.save();
-    // return response after update status
+
     return res.status(200).json({
       success: true,
       message: "Task Status Updated Successfully",
       task,
     });
+
   } catch (error) {
+
     if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
