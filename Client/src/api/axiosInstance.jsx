@@ -2,19 +2,20 @@
 
 import axios from "axios";
 
-// first add our base api url
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/api/user",
+  baseURL: "http://localhost:4000/api",
 });
 
-// and next add our authentication token
 axiosInstance.interceptors.request.use((config) => {
-  // get token from local Storage
+
   const token = localStorage.getItem("token");
+
   if (token) {
-    // add it's from authorizatio headers
-    config.headers["Authorization"] = `Bearer Token : ${token}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
+
 });
+
 export default axiosInstance;
