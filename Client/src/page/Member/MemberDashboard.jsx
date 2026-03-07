@@ -10,14 +10,15 @@ const MemberDashboard = () => {
 
   const fetchMyTasks = async () => {
     try {
+      // here we fetched the assigning task of that member
       const res = await axiosInstance.get("/task/getMyTask");
-
+      // get that tasks list
       const myTasks =
         res.data.tasks ||
         res.data.data ||
         res.data.assignedTasks ||
         [];
-
+      // save and show in my ui
       setTasks(myTasks);
       setLoading(false);
 
