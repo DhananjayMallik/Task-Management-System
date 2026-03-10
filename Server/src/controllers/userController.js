@@ -207,6 +207,15 @@ export const deleteUser = async (req, res) => {
         message: 'User Not Found! please try again',
       })
     }
+     // Check if user exists
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
     // if user found
     await User.findByIdAndDelete(userId)
     return res.status(201).json({
@@ -216,8 +225,9 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: 'Server Error',
+      message: 'Server error',
       error: error.message,
     })
   }
 }
+// Admin Can View All The User 

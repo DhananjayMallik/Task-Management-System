@@ -26,5 +26,5 @@ router.get('/adminProfile' , authMiddleware , adminOnly , (req,res)=>{
 // admin can only update the details of any user
 router.put('/update-User/:id',authMiddleware , adminOnly , AdminUpdateUser);
 // delete user here
-router.delete('/delete/:id',deleteUser);
+router.delete('/delete/:id',authMiddleware , adminOnly , deleteUser);
 export default router;
