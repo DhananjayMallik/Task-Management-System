@@ -7,7 +7,7 @@ import AdminDashboard from "../page/Admin/AdminDashboard";
 import ManageUsers from "../page/Admin/ManageUsers";
 import UpdateUser from "../page/Admin/UpdateUser";
 import MemberDashboard from "../page/Member/MemberDashboard";
-
+import NotFound from "../page/Member/NotFound"; 
 const AppRoutes = () => {
   return (
     <Routes>
@@ -58,7 +58,7 @@ const AppRoutes = () => {
           </ProtectedRoutes>
         }
       />
-
+ <Route path="*" element={<NotFound/>}/>
     </Routes>
   );
 };

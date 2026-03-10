@@ -1,0 +1,28 @@
+/* src/styles/circleAnimation.css */
+
+.circleBox {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+.circleBox:hover {
+  transform: scale(1.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Smooth grow animation */
+@keyframes growCircle {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.circle-animate {
+  animation: growCircle 0.7s ease-out forwards;
+}

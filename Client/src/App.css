@@ -1,0 +1,21 @@
+@keyframes grow {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.sidebar-item {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.sidebar-item:hover {
+  background: #e5e7eb;
+  font-weight: 600;
+}

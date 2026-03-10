@@ -33,7 +33,8 @@ const Login = () => {
       else navigate("/member-dashboard");
     } catch (error) {
       console.log(error);
-      alert(error.response?.data?.message || "Login Failed");
+      // Redirect to NotFound page on login fail
+      navigate("/NotFound");
     }
   };
   return (
