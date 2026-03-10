@@ -76,26 +76,26 @@ export const registerUser = async (req, res) => {
     */
 export const loginUser = async (req, res) => {
   try {
-    await loginSchema.validate({ body: req.body }, { abortEarly: false });
+    await loginSchema.validate({ body: req.body }, { abortEarly: false })
 
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     // find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "User not found"
-      });
+        message: 'User not found',
+      })
     }
 
     // check password
-    const passwordMatched = await bcrypt.compare(password, user.password);
+    const passwordMatched = await bcrypt.compare(password, user.password)
     if (!passwordMatched) {
       return res.status(403).json({
         success: false,
-        message: "Invalid password"
-      });
+        message: 'Invalid password',
+      })
     }
 
     // generate token
@@ -106,15 +106,15 @@ export const loginUser = async (req, res) => {
         role: user.role,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "1h" }
-    );
+      { expiresIn: '1h' }
+    )
 
     // 🎯 ROLE-BASED LOGIN RESPONSE
-    if (user.role === "admin") {
+    if (user.role === 'admin') {
       return res.status(200).json({
         success: true,
-        message: "Welcome Admin",
-        role: "admin",
+        message: 'Welcome Admin',
+        role: 'admin',
         token,
         user: {
           id: user._id,
@@ -122,14 +122,14 @@ export const loginUser = async (req, res) => {
           email: user.email,
           role: user.role,
         },
-      });
+      })
     }
 
-    if (user.role === "member") {
+    if (user.role === 'member') {
       return res.status(200).json({
         success: true,
-        message: "Welcome Member",
-        role: "member",
+        message: 'Welcome Member',
+        role: 'member',
         token,
         user: {
           id: user._id,
@@ -137,16 +137,16 @@ export const loginUser = async (req, res) => {
           email: user.email,
           role: user.role,
         },
-      });
+      })
     }
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Server error",
+      message: 'Server error',
       error: error.message,
-    });
+    })
   }
-};
+}
 /*📌
 Update User : 
 only Admin can update existing user details. 
@@ -207,14 +207,14 @@ export const deleteUser = async (req, res) => {
         message: 'User Not Found! please try again',
       })
     }
-     // Check if user exists
-    const user = await User.findById(userId);
+    // Check if user exists
+    const user = await User.findById(userId)
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
-      });
+        message: 'User not found',
+      })
     }
     // if user found
     await User.findByIdAndDelete(userId)
@@ -230,4 +230,34 @@ export const deleteUser = async (req, res) => {
     })
   }
 }
-// Admin Can View All The User 
+// Admin Can View All The User
+export const ViewUser = async (req, res) => {
+  try {
+     // Check if user exists (set by authMiddleware)
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized: User missing!",
+      });
+    }
+
+    // Check role
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Access Denied: Only Admin Can View All Users!",
+      });
+    }
+    const users = await User.find()
+    return res.status(201).json({
+      success: true,
+      message: 'All User Fetched Successfully',
+      users,
+    })
+  } catch (error) {
+    return res.status(404).json({
+      success: false,
+      message: 'Server Error',
+    })
+  }
+}
