@@ -231,9 +231,10 @@ export const deleteUser = async (req, res) => {
   }
 }
 // Admin Can View All The User
+// Any Member Can't View The user Details
 export const ViewUser = async (req, res) => {
   try {
-     // Check if user exists (set by authMiddleware)
+     // Check if user exists 
     if (!req.user) {
       return res.status(401).json({
         success: false,

@@ -4,10 +4,9 @@ import Login from "../page/Auth/Login";
 import SignUp from "../page/Auth/SignUp";
 import ProtectedRoutes from "./ProtectedRoutes";
 import AdminDashboard from "../page/Admin/AdminDashboard";
-import ManageUsers from "../page/Admin/ManageUsers";
 import UpdateUser from "../page/Admin/UpdateUser";
 import MemberDashboard from "../page/Member/MemberDashboard";
-import NotFound from "../page/Member/NotFound"; 
+import NotFound from "../page/Member/NotFound";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -30,14 +29,7 @@ const AppRoutes = () => {
       />
 
       {/* Admin Manage Users */}
-      <Route
-        path="/admin/manage-users"
-        element={
-          <ProtectedRoutes allowrole="admin">
-            <ManageUsers />
-          </ProtectedRoutes>
-        }
-      />
+     
 
       {/* Admin Update User */}
       <Route
