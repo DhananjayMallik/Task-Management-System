@@ -26,7 +26,7 @@ router.get('/adminProfile' , authMiddleware , adminOnly , (req,res)=>{
 // admin can only update the details of any user
 router.put('/update-User/:id',authMiddleware , adminOnly , AdminUpdateUser);
 // delete user here
-router.delete('/delete/:id',authMiddleware , adminOnly , deleteUser);
+router.delete('/delete/:id', authMiddleware, adminOnly, deleteUser);
 // Only Admin Can view All the user
 router.get("/all-users", authMiddleware, adminOnly, ViewUser);
 export default router;

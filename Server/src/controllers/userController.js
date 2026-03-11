@@ -199,14 +199,7 @@ export const AdminUpdateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     // first request an id
-    const userId = req.params.id
-    // check user exist ot not
-    if (!userId) {
-      return res.status(403).json({
-        success: false,
-        message: 'User Not Found! please try again',
-      })
-    }
+    const userId = req.params.id;
     // Check if user exists
     const user = await User.findById(userId)
 
@@ -218,12 +211,12 @@ export const deleteUser = async (req, res) => {
     }
     // if user found
     await User.findByIdAndDelete(userId)
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: 'User Deleted Successfully',
     })
   } catch (error) {
-    return res.status(401).json({
+    return res.status(500).json({
       success: false,
       message: 'Server error',
       error: error.message,

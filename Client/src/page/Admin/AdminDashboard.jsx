@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ViewUser from "./ViewUser";
 import UpdateUser from './UpdateUser';
+import DeleteUser from "./DeleteUser";
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("manageUsers");
 
@@ -37,6 +38,16 @@ const AdminDashboard = () => {
           >
             Update User
           </li>
+          <li
+            onClick={() => setActiveSection("deleteUsers")}
+            className={`cursor-pointer px-3 py-2 rounded-md transition 
+              ${activeSection === "deleteUsers" 
+                ? "bg-blue-600 text-white" 
+                : "hover:bg-blue-100 text-gray-700"
+              }`}
+          >
+            Delete User
+          </li>
         </ul>
 
         {/* Manage Task */}
@@ -70,6 +81,12 @@ const AdminDashboard = () => {
           <div>
             <h2 className="text-xl font-semibold mb-4">Update Users</h2>
             <UpdateUser />
+          </div>
+        )}
+        {activeSection === "deleteUsers" && (
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Delete Users</h2>
+            <DeleteUser />
           </div>
         )}
           {/* ✔ Manage Tasks Section */}

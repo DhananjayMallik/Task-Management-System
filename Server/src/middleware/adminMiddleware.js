@@ -8,21 +8,21 @@ export const adminOnly = (req,res,next) => {
     try {
           // req.user is set by authMiddleware
           if(!req.user){
-            return req.status(402).json({
+            return req.status(401).json({
                 success : false,
                 message : "Unauthorized user informatio missing!"
             })
           }
           // check role
           if(req.user.role !== 'admin'){
-            return res.status(402).json({
+            return res.status(403).json({
                 success : false,
                 message : "Access Denied You will not access admin panel"
             })
           }
           next();
     } catch (error) {
-        return res.status(403).json({
+        return res.status(500).json({
             success : false,
             message : "Server error",
             error : error.message
