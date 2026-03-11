@@ -8,7 +8,7 @@ const ViewUser = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  // Here We Fetch All the User Details
+  // Here We Fetch All the User Details --> Only Admin Can Perform that Operation
   const fetchAllUsers = async () => {
     try {
       const res = await axiosInstance.get("/user/all-Users", {
