@@ -14,8 +14,9 @@ const AdminDashboard = () => {
         <h2 className="text-2xl font-bold text-blue-600 mb-6">
           Admin Panel
         </h2>
-
+        
         {/* Manage User */}
+        
         <p className="text-gray-500 text-sm mb-2">MANAGE USER</p>
         <ul className="mb-6">
           <li
@@ -66,7 +67,10 @@ const AdminDashboard = () => {
         </ul>
 
       </aside>
-
+      
+<ul>
+  
+</ul>
       {/* ---------- Right Section ---------- */}
       <main className="flex-1 p-6">
 

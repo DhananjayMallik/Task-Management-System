@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
-
+import { Link } from "react-router-dom";
 const DeleteUser = () => {
   const { auth } = useAuth();
   const [users, setUsers] = useState([]);
@@ -17,30 +17,28 @@ const DeleteUser = () => {
 
       setUsers(res.data.users || []);
       setLoading(false);
-
     } catch (error) {
-      setError("Failed to fetch users",error);
+      setError("Failed to fetch users", error);
       setLoading(false);
     }
   };
 
   // Delete user
-const handleDelete = async (id) => {
-  if (!window.confirm("Are you sure?")) return;
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure?")) return;
 
-  try {
-    await axiosInstance.delete(`/user/delete/${id}`, {
-      headers: { Authorization: `Bearer ${auth.token}` }
-    });
+    try {
+      await axiosInstance.delete(`/user/delete/${id}`, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      });
 
-    alert("User Deleted Successfully.");
-    fetchUsers();
-
-  } catch (err) {
-    alert("Delete failed");
-    console.log(err);
-  }
-};
+      alert("User Deleted Successfully.");
+      fetchUsers();
+    } catch (err) {
+      alert("Delete failed");
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -48,11 +46,18 @@ const handleDelete = async (id) => {
 
   return (
     <div className="bg-white p-6 shadow-xl rounded-2xl border border-gray-200">
+        <div className="flex justify-between items-center mb-6">
+  <h4 className="text-3xl text-gray-800 font-bold">
+    👥 Delete Any User
+  </h4>
 
-      <h4 className="text-3xl text-gray-800 mb-6 font-bold">
-        👥 Delete Any User
-      </h4>
-
+  <Link
+    to="/login"
+    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+  >
+    Go Home
+  </Link>
+</div>
       {loading && <p className="text-gray-500">Fetching users...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
@@ -97,20 +102,27 @@ const handleDelete = async (id) => {
 
                   <td className="p-4 text-center">
                     <button
-                     onClick={() => handleDelete(user._id)} 
+                      onClick={() => handleDelete(user._id)}
                       className="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600 cursor-pointer"
                     >
                       Delete
                     </button>
                   </td>
-
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       )}
+
+      {/* <div className="flex justify-center items-center my-3">
+        <Link
+        to="/login"
+        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition align-middle"
+      >
+        Go Home
+      </Link>
+      </div> */}
     </div>
   );
 };
