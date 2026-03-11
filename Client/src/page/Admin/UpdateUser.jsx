@@ -14,7 +14,7 @@ const ViewUser = () => {
     role: "",
   });
   const [editingUser, setEditingUser] = useState(null);
-
+  const [showPopUp , setPopUp] = useState(false);
   // Fetch users
   const fetchUsers = async () => {
     try {
@@ -40,6 +40,7 @@ const ViewUser = () => {
       email: user.email,
       role: user.role,
     });
+    setPopUp(true);
   };
 
   // Update user
@@ -54,6 +55,7 @@ const ViewUser = () => {
       );
 
       alert("User Updated Successfully!");
+      setPopUp(false);
       setEditingUser(null);
       fetchUsers();
 
@@ -102,64 +104,71 @@ const ViewUser = () => {
         </table>
       </div>
 
-      {/* Edit Form */}
-      {editingUser && (
-        <div className="mt-8 bg-gray-50 p-6 rounded-xl border shadow-md">
-          <h3 className="text-xl font-semibold mb-4">✏️ Update User Details</h3>
+        {/* 🔥 Popup Modal */}
+      {showPopUp && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white w-11/12 sm:w-96 p-6 rounded-xl shadow-2xl relative animate-fadeIn">
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-gray-700 font-medium">Name</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full mt-1 p-2 border rounded-lg"
-              />
+            {/* Close Button */}
+            <button
+              className="absolute top-2 right-3 text-xl text-gray-500 hover:text-black"
+              onClick={() => setPopUp(false)}
+            >
+              ✖
+            </button>
+
+            <h3 className="text-xl font-semibold mb-4">✏️ Update User Details</h3>
+
+            <div className="grid gap-4">
+
+              <div>
+                <label className="text-gray-700 font-medium">Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full mt-1 p-2 border rounded-lg"
+                />
+              </div>
+
+              <div>
+                <label className="text-gray-700 font-medium">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="w-full mt-1 p-2 border rounded-lg"
+                />
+              </div>
+
+              <div>
+                <label className="text-gray-700 font-medium">Role</label>
+                <select
+                  value={formData.role}
+                  onChange={(e) =>
+                    setFormData({ ...formData, role: e.target.value })
+                  }
+                  className="w-full mt-1 p-2 border rounded-lg"
+                >
+                  <option value="member">Member</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
             </div>
 
-            <div>
-              <label className="text-gray-700 font-medium">Email</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full mt-1 p-2 border rounded-lg"
-              />
-            </div>
+            <button
+              onClick={handleUpdate}
+              className="mt-6 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
+            >
+              Update User
+            </button>
 
-            <div>
-              <label className="text-gray-700 font-medium">Role</label>
-              <select
-                value={formData.role}
-                onChange={(e) =>
-                  setFormData({ ...formData, role: e.target.value })
-                }
-                className="w-full mt-1 p-2 border rounded-lg"
-              >
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
           </div>
-
-          <button
-            onClick={handleUpdate}
-            className="mt-6 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
-          >
-            Update User
-          </button>
-
-          <button
-            onClick={() => setEditingUser(null)}
-            className="mt-6 ml-4 bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
-          >
-            Cancel
-          </button>
         </div>
       )}
 
