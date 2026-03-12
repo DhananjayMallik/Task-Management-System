@@ -112,7 +112,6 @@ const fetchTasks = async () => {
       setMessage("❌ Failed to assign task");
     }
   };
-
   return (
   <div className="max-w-4xl mx-auto mt-12 bg-white shadow-2xl rounded-3xl border border-gray-200 p-10">
 
