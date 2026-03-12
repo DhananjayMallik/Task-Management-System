@@ -127,29 +127,65 @@ const AdminDashboard = () => {
         )}
 
         {/* Update Task Section */}
-        {activeSection === "updateTasks" && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Update Tasks</h2>
+      {activeSection === "updateTasks" && (
+  <div className="mt-6">
 
-            {tasks.length === 0 ? (
-              <p>No tasks available.</p>
-            ) : (
-              <div className="space-y-4">
-                {tasks.map((task) => (
-                  <div key={task._id} className="bg-white shadow p-4 rounded-xl">
-                    <h3 className="font-bold text-lg">{task.title}</h3>
-                    <p className="text-gray-600">{task.description}</p>
+    <h2 className="text-3xl font-extrabold text-gray-800 mb-6 tracking-tight">
+      ✏️ Update Tasks
+    </h2>
+        {/* If no tasks found or length zero then show that message */}
+    {tasks.length === 0 ? (
+      <p className="text-gray-500 text-lg text-center py-10">
+        No tasks available.
+      </p>
+      // Map all the task and list out in my ui that are fetch through axiosInstance 
+    ) : (
+      <div className="space-y-6">
+        {tasks.map((task) => (
+          <div
+            key={task._id}
+            className="p-6 bg-gradient-to-br from-gray-50 to-white border border-gray-200 
+                     rounded-2xl shadow-md hover:shadow-xl transition duration-300"
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-xl font-bold text-gray-900">{task.title}</h3>
+            </div>
 
-                    <UpdateTask
-                      taskId={task._id}
-                      refreshTasks={fetchTasks}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Description */}
+            <p className="text-gray-700 text-sm leading-relaxed mb-4">
+              {task.description}
+            </p>
+
+            {/* Task Metadata if the task assigned to the member then it shows that member email id otherwide not assigned*/}
+            <div className="text-sm text-gray-600 space-y-1">
+              <p>
+                <strong className="text-gray-800">Assigned To:</strong>{" "}
+                {task.assignedTo ? (
+                  <span className="text-blue-700 font-semibold">
+                    {task.assignedTo.name} ({task.assignedTo.email})
+                  </span>
+                ) : (
+                  <span className="italic text-gray-500">Not assigned</span>
+                )}
+              </p>
+            </div>
+
+            {/* Update Button */}
+            {/* During Update First Fetch All the tasks after update task fetch the new updated task */}
+            <div className="mt-5 flex justify-end">
+              <UpdateTask
+                taskId={task._id}
+                task={task}
+                refreshTasks={fetchTasks}
+              />
+            </div>
           </div>
-        )}
+        ))}
+      </div>
+    )}
+  </div>
+)}
 
       </main>
 

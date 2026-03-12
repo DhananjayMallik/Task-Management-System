@@ -126,6 +126,7 @@ const fetchTasks = async () => {
       { key: "create", label: "➕ Create Task" },
       { key: "all", label: "📋 All Tasks" },
       { key: "assign", label: "🔗 Assign Task" },
+      // here we map all the active tab like createtask , alltasks,assigntask
     ].map((tab) => (
       <button
         key={tab.key}
@@ -204,17 +205,20 @@ const fetchTasks = async () => {
     </h2>
 
     {/* Stats */}
+    {/*--> by using find the length of total tasks */}
     <div className="grid grid-cols-3 gap-4 mb-8">
       <div className="bg-blue-50 p-4 rounded-2xl border border-blue-200 shadow-sm">
         <p className="text-sm text-blue-700 font-semibold">Total Tasks</p>
         <h3 className="text-2xl font-bold text-blue-900">{tasks.length}</h3>
       </div>
+      {/* Here we filter out the assigned task those task that are assigned --> by using find the length */}
       <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-200 shadow-sm">
         <p className="text-sm text-yellow-700 font-semibold">Assigned</p>
         <h3 className="text-2xl font-bold text-yellow-900">
           {tasks.filter((t) => t.assignedTo).length}
         </h3>
       </div>
+      {/* Here we filter out the Unassigned task those task that are not assigned--> by using find the length  */}
       <div className="bg-gray-100 p-4 rounded-2xl border border-gray-300 shadow-sm">
         <p className="text-sm text-gray-700 font-semibold">Unassigned</p>
         <h3 className="text-2xl font-bold text-gray-900">
@@ -224,11 +228,13 @@ const fetchTasks = async () => {
     </div>
 
     {/* Task List */}
+    {/* if the task not found otherwise tasks length is zero then show that message */}
     <div className="space-y-6">
       {tasks.length === 0 ? (
         <div className="text-center text-gray-500 text-lg py-10">
           No tasks found.
         </div>
+        // Map all the task and list out in my ui that are fetch through axiosInstance 
       ) : (
         tasks.map((task) => (
           <div
@@ -238,7 +244,7 @@ const fetchTasks = async () => {
             {/* Header */}
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-xl font-bold text-gray-900">{task.title}</h3>
-
+              {/* if that task will assigned  someone then show message (assigned) oterwise not assigned*/}
               <span
                 className={`px-4 py-1.5 text-sm rounded-full font-semibold shadow-sm ${
                   task.assignedTo
@@ -261,7 +267,7 @@ const fetchTasks = async () => {
                   ? `${task.createdBy.name} (${task.createdBy.email})`
                   : "Unknown"}
               </p>
-
+                  {/* Here we shown assigned member email id and name */}
               <p className="text-sm text-gray-600 mt-1">
                 <strong className="text-gray-800">Assigned To:</strong>{" "}
                 {task.assignedTo ? (
@@ -269,12 +275,14 @@ const fetchTasks = async () => {
                     {task.assignedTo.name} ({task.assignedTo.email})
                   </span>
                 ) : (
+                  // if not then show Not Assigned
                   <span className="text-gray-500 italic">Not Assigned</span>
                 )}
               </p>
             </div>
 
             {/* Footer */}
+            {/*here we shown when any admin click assign then redirect to the assignTask Page through that AssignedTaskID */}
             <div className="mt-5 flex justify-end">
               <button
                 onClick={() => {
@@ -301,6 +309,7 @@ const fetchTasks = async () => {
       </h2>
 
       {/* Task Dropdown */}
+      {/* Here we figure out all the listed task and select that AssignedTaskId  */}
       <div>
         <label className="font-semibold text-gray-700">Select Task</label>
         <select
@@ -309,6 +318,7 @@ const fetchTasks = async () => {
           onChange={(e) => setAssignTaskId(e.target.value)}
           className="w-full p-3 mt-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
         >
+          {/* figure out that task through taskId which one is assigned someone */}
           <option value="">Choose a task</option>
           {tasks.map((task) => (
             <option key={task._id} value={task._id}>
@@ -319,6 +329,7 @@ const fetchTasks = async () => {
       </div>
 
       {/* Member Dropdown */}
+      {/* Here we find out the member through email and name */}
       <div>
         <label className="font-semibold text-gray-700">Assign To Member</label>
         <select
