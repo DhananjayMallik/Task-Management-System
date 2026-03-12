@@ -21,6 +21,11 @@ This project includes:
 ![alt text](<Screenshot 2026-03-11 104327-1.png>)
 ![alt text](<Screenshot 2026-03-11 114709-1.png>)
 ![alt text](<Screenshot 2026-03-12 155317-1.png>)
+![alt text](<Screenshot 2026-03-12 175834.png>)
+![alt text](<Screenshot 2026-03-12 175853.png>)
+![alt text](<Screenshot 2026-03-12 175908.png>)
+![alt text](<Screenshot 2026-03-12 175928.png>)
+![alt text](<Screenshot 2026-03-12 175939.png>)
 ## 🔥 Features
 
 ### 🔐 Authentication
