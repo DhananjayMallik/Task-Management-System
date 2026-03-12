@@ -2,9 +2,10 @@ import Task from '../models/Task.js'
 import {
   createTaskSchema,
   updateTaskSchema,
-  assignTaskSchema
+  assignTaskSchema,
+  updateTaskDetails,
 } from '../validation/TaskValidation.js'
-import User from '../models/User.js';
+import User from '../models/User.js'
 // get my tasks only those that have been assigned : only member assigning task details
 export const GetMyTasks = async (req, res) => {
   try {
@@ -42,7 +43,7 @@ export const CreateTask = async (req, res) => {
     // Validate schema
     await createTaskSchema.validate(req.body, { abortEarly: false })
 
-    const { title, description} = req.body
+    const { title, description } = req.body
 
     const task = new Task({
       title,
@@ -75,104 +76,98 @@ export const CreateTask = async (req, res) => {
 export const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find()
-      .populate("assignedTo", "name email")
-      .populate("createdBy", "name email");
+      .populate('assignedTo', 'name email')
+      .populate('createdBy', 'name email')
 
     return res.status(200).json({
       success: true,
       tasks: tasks,
-    });
-
+    })
   } catch (error) {
-    if (error.name === "ValidationError") {
+    if (error.name === 'ValidationError') {
       return res.status(400).json({
         success: false,
         errors: error.errors,
-      });
+      })
     }
 
     return res.status(500).json({
       success: false,
-      message: "Server Error in getAllTasks",
-    });
+      message: 'Server Error in getAllTasks',
+    })
   }
-};
+}
 
 export const UpdateTaskStatus = async (req, res) => {
   try {
+    await updateTaskSchema.validate(req.body, { abortEarly: false })
 
-    await updateTaskSchema.validate(req.body, { abortEarly: false });
+    const { id } = req.params
 
-    const { id } = req.params;
-
-    const task = await Task.findById(id);
+    const task = await Task.findById(id)
 
     if (!task) {
       return res.status(404).json({
         success: false,
-        message: "Task Not Found!",
-      });
+        message: 'Task Not Found!',
+      })
     }
 
-    const loggedInUserId = req.user._id.toString();
-    const assignedUserId = task.assignedTo
-      ? task.assignedTo.toString()
-      : null;
+    const loggedInUserId = req.user._id.toString()
+    const assignedUserId = task.assignedTo ? task.assignedTo.toString() : null
 
     // Only admin or assigned member can update
-    if (req.user.role !== "admin" && assignedUserId !== loggedInUserId) {
+    if (req.user.role !== 'admin' && assignedUserId !== loggedInUserId) {
       return res.status(403).json({
         success: false,
         message: "You cannot update another user's task",
-      });
+      })
     }
 
-    task.status = req.body.status;
+    task.status = req.body.status
 
-    await task.save();
+    await task.save()
 
     return res.status(200).json({
       success: true,
-      message: "Task Status Updated Successfully",
+      message: 'Task Status Updated Successfully',
       task,
-    });
-
+    })
   } catch (error) {
-
-    if (error.name === "ValidationError") {
+    if (error.name === 'ValidationError') {
       return res.status(400).json({
         success: false,
         errors: error.errors,
-      });
+      })
     }
 
     return res.status(500).json({
       success: false,
       message: error.message,
-    });
+    })
   }
-};
+}
 /* Delete Task : Only Admin Can delete the assigned task  */
-export const deleteTaskOnlyAdmin = async(req,res) => {
+export const deleteTaskOnlyAdmin = async (req, res) => {
   try {
-    const taskId = req.params.id; // fetch that task id that you want to deleted in your history
+    const taskId = req.params.id // fetch that task id that you want to deleted in your history
     // check task exist or not
-    if(!taskId){
+    if (!taskId) {
       return res.status(402).json({
-        success : false,
-        message : "Task Not Found"
-      });
+        success: false,
+        message: 'Task Not Found',
+      })
     }
-    await Task.findByIdAndDelete(taskId);
+    await Task.findByIdAndDelete(taskId)
     return res.status(201).json({
-      success : true,
-      message : "Task Deleted Successfully"
-    });
+      success: true,
+      message: 'Task Deleted Successfully',
+    })
   } catch (error) {
-     return res.status(404).json({
-      success : false,
-      errors : error.errors
-     });
+    return res.status(404).json({
+      success: false,
+      errors: error.errors,
+    })
   }
 }
 
@@ -182,13 +177,57 @@ export const deleteTaskOnlyAdmin = async(req,res) => {
 --------------------------------------------------- */
 export const AssignedTaskOnlyAdmin = async (req, res) => {
   try {
-    await assignTaskSchema.validate(req.body, { abortEarly: false });
+    await assignTaskSchema.validate(req.body, { abortEarly: false })
 
-    const { id } = req.params;
-    const { assignedTo } = req.body;
+    const { id } = req.params
+    const { assignedTo } = req.body
 
     // Check task exists
+    const task = await Task.findById(id)
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task Not Found',
+      })
+    }
+
+    // Check member exists
+    const user = await User.findById(assignedTo)
+    if (!user || user.role !== 'member') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid Member ID',
+      })
+    }
+
+    // Assign task
+    task.assignedTo = assignedTo
+    // task.status = "Assigned";
+    await task.save()
+
+    return res.status(200).json({
+      success: true,
+      message: 'Task Assigned Successfully',
+      task,
+    })
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      errors: error.errors || error.message,
+    })
+  }
+}
+// Update Task Details --> Only Admin Can Update The Created Task Details
+export const UpdateTaskDetails = async (req, res) => {
+  try {
+
+    // validate request body
+    await updateTaskDetails.validate(req.body, { abortEarly: false });
+
+    const { id } = req.params;
+
     const task = await Task.findById(id);
+
     if (!task) {
       return res.status(404).json({
         success: false,
@@ -196,29 +235,37 @@ export const AssignedTaskOnlyAdmin = async (req, res) => {
       });
     }
 
-    // Check member exists
-    const user = await User.findById(assignedTo);
-    if (!user || user.role !== "member") {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Member ID",
-      });
+    const { title, description } = req.body;
+    // if task title will not provide
+    if (title !== undefined) {
+      task.title = title;
+    }
+    // if task description will not provide
+
+    if (description !== undefined) {
+      task.description = description;
     }
 
-    // Assign task
-    task.assignedTo = assignedTo;
-    // task.status = "Assigned";
     await task.save();
 
     return res.status(200).json({
       success: true,
-      message: "Task Assigned Successfully",
+      message: "Task Updated Successfully",
       task,
     });
+
   } catch (error) {
-    return res.status(400).json({
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        success: false,
+        errors: error.errors,
+      });
+    }
+
+    return res.status(500).json({
       success: false,
-      errors: error.errors || error.message,
+      message: "Server Error",
     });
   }
 };
