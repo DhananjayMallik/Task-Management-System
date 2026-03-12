@@ -1,106 +1,135 @@
-/*
-{
-    "title": "Fix backend Set up",
-    "description": " validation issue",
-    "createdBy": "69a51f52102bb801d3b91a2d"
-} 
-during Task Creation Only Admin Can Create Task Any Member Can't Create Task 
-*/
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
+
 const CreateTask = () => {
-  // Only Admin Can Create a Task
   const { auth } = useAuth();
-  // if the loggedInuser is not admin then only
+
+  // If user is not admin
   if (auth.user.role !== "admin") {
     return (
-      <div className="text-center mt-10 text-red-600 text-lg font-semibold">
-        ❌ Only Admin Can Create Tasks
+      <div className="flex justify-center mt-16">
+        <div className="bg-red-100 border border-red-300 text-red-700 px-6 py-4 rounded-xl shadow-md text-lg font-semibold">
+          ❌ Access Denied — Only Admin Can Create Tasks
+        </div>
       </div>
     );
   }
-  // if the user is admin then only he or she can create task
-  // make a default value of the task section
-  const [FormData, setFormData] = useState({
-    title: " ",
-    description: " ",
+
+  // Form data
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
   });
-  // Then After Creation of task show the message
-  const [message, setMessage] = useState("");
-  // handle task creation button
+
+  const [message, setMessage] = useState({ type: "", text: "" });
+
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
+    setMessage({ type: "", text: "" });
+
     try {
-      const res = await axiosInstance.post(
+      await axiosInstance.post(
         "/task/createTask",
         {
-          ...FormData,
+          ...formData,
           createdBy: auth.user._id,
         },
         {
-          headers: { Authorization: `Bearer Token : ${auth.token}` },
-        },
+          headers: { Authorization: `Bearer ${auth.token}` },
+        }
       );
-      setMessage(" ✅ Task Created Successfull");
-      setFormData({ title: " ", description: " " });
+
+      // Success message
+      setMessage({
+        type: "success",
+        text: "✔️ Task Created Successfully!",
+      });
+
+      // Auto-hide after 2 seconds
+      setTimeout(() => {
+        setMessage({ type: "", text: "" });
+      }, 2000);
+
+      // Clear inputs
+      setFormData({ title: "", description: "" });
+
     } catch (error) {
-      alert(" ❌ Failed To Create Task", error);
+      setMessage({ type: "error", text: "❌ Failed to create task" });
+      setTimeout(() => {
+        setMessage({ type: "", text: "" });
+      }, 2000);
     }
   };
+
   return (
-    <div className="bg-white p-6 shadow-xl rounded-2xl border border-gray-200 max-w-lg mx-auto">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">
-        📝 Create New Task
+    <div className="max-w-xl mx-auto mt-10 p-8 bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-2xl transition-all">
+
+      {/* Header */}
+      <h2 className="text-4xl font-extrabold text-gray-800 mb-6 flex items-center gap-2">
+        📝 Create Task
       </h2>
 
-      {message && (
+      {/* Message Alert */}
+      {message.text && (
         <div
-          className={`p-3 mb-4 rounded-lg text-white ${
-            message.includes("Failed") ? "bg-red-500" : "bg-green-600"
-          }`}
+          className={`p-4 mb-6 rounded-lg shadow-md text-sm font-semibold animate-fadeIn 
+            ${
+              message.type === "success"
+                ? "bg-green-600 text-white"
+                : "bg-red-600 text-white"
+            }`}
         >
-          {message}
+          {message.text}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+
         {/* Title */}
         <div>
-          <label className="text-gray-700 font-medium">Task Title</label>
+          <label className="text-gray-700 font-semibold">Task Title</label>
           <input
             type="text"
             required
-            value={FormData.title}
+            placeholder="Enter task title..."
+            value={formData.title}
             onChange={(e) =>
-              setFormData({ ...FormData, title: e.target.value })
+              setFormData({ ...formData, title: e.target.value })
             }
-            className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+            className="w-full mt-2 p-3 border border-gray-300 rounded-lg 
+                       shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="text-gray-700 font-medium">Task Description</label>
+          <label className="text-gray-700 font-semibold">Task Description</label>
           <textarea
             required
             rows="4"
-            value={FormData.description}
+            placeholder="Describe the task..."
+            value={formData.description}
             onChange={(e) =>
-              setFormData({ ...FormData, description: e.target.value })
+              setFormData({ ...formData, description: e.target.value })
             }
-            className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+            className="w-full mt-2 p-3 border border-gray-300 rounded-lg 
+                       shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
           ></textarea>
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold cursor-pointer"
+          className="w-full py-3 bg-blue-600 text-white rounded-xl text-lg font-semibold 
+                     hover:bg-blue-700 shadow-lg hover:shadow-2xl cursor-pointer 
+                     transform transition-all hover:-translate-y-0.5"
         >
-          📝 Create Task
+          ➕ Create Task
         </button>
+
       </form>
     </div>
   );
