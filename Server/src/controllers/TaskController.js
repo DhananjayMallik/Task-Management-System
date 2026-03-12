@@ -72,24 +72,31 @@ export const CreateTask = async (req, res) => {
   }
 }
 
-// get all the task that created by admin and assigned that member : only Admin Can Control it
 export const getAllTasks = async (req, res) => {
   try {
-    // get that admin details
-    // populate : when you store relationship in DB you often store only the reference  of another document
     const tasks = await Task.find()
-      .populate('assignedTo', 'name email')
-      .populate('createdBy', 'name email')
-    res.json(tasks)
+      .populate("assignedTo", "name email")
+      .populate("createdBy", "name email");
+
+    return res.status(200).json({
+      success: true,
+      tasks: tasks,
+    });
+
   } catch (error) {
-    if (error.name === 'ValidationError') {
+    if (error.name === "ValidationError") {
       return res.status(400).json({
         success: false,
-        errors: error.errors, // Return all validation messages
-      })
+        errors: error.errors,
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Server Error in getAllTasks",
+    });
   }
-}
+};
 
 export const UpdateTaskStatus = async (req, res) => {
   try {

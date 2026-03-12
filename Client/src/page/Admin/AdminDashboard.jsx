@@ -2,7 +2,8 @@ import { useState } from "react";
 import ViewUser from "./ViewUser";
 import UpdateUser from './UpdateUser';
 import DeleteUser from "./DeleteUser";
-import CreateTask from "./CreateTask";
+import TaskManager from "./TaskManager";
+// import AssignTask from './AssignTask';
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("manageUsers");
 
@@ -63,7 +64,7 @@ const AdminDashboard = () => {
                 : "hover:bg-blue-100 text-gray-700"
               }`}
           >
-           Create Task
+           Task Manager
           </li>
         </ul>
 
@@ -96,10 +97,14 @@ const AdminDashboard = () => {
         )}
         {activeSection === "createTasks" && (
           <div>
-            <CreateTask />
+            <TaskManager />
           </div>
         )}
-
+        {/* {activeSection === "assignTasks" && (
+          <div>
+            <AssignTask />
+          </div>
+        )} */}
       </main>
 
     </div>

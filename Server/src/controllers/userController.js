@@ -237,7 +237,7 @@ export const ViewUser = async (req, res) => {
 
     // Check role
     if (req.user.role !== "admin") {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
         message: "Access Denied: Only Admin Can View All Users!",
       });
@@ -249,7 +249,7 @@ export const ViewUser = async (req, res) => {
       users,
     })
   } catch (error) {
-    return res.status(404).json({
+    return res.status(500).json({
       success: false,
       message: 'Server Error',
     })
