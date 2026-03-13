@@ -6,6 +6,7 @@ import TaskManager from "./TaskManager";
 import UpdateTask from "./UpdateTask";
 import axiosInstance from "../../api/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
+import DeleteTask from "./DeleteTask";
 
 const AdminDashboard = () => {
   const { auth } = useAuth();
@@ -25,20 +26,17 @@ const AdminDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    if (activeSection === "updateTasks") {
-      fetchTasks();
-    }
-  }, [activeSection]);
+ useEffect(() => {
+  if (activeSection === "updateTasks" || activeSection === "deleteTasks") {
+    fetchTasks();
+  }
+}, [activeSection]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-
       {/* ---------- Sidebar ---------- */}
       <aside className="w-64 bg-white shadow-xl p-6">
-        <h2 className="text-2xl font-bold text-blue-600 mb-6">
-          Admin Panel
-        </h2>
+        <h2 className="text-2xl font-bold text-blue-600 mb-6">Admin Panel</h2>
 
         {/* Manage User */}
         <p className="text-gray-500 text-sm mb-2">MANAGE USER</p>
@@ -91,12 +89,19 @@ const AdminDashboard = () => {
           >
             Update Task
           </li>
+          <li
+            onClick={() => setActiveSection("deleteTasks")}
+            className={`cursor-pointer px-3 py-2 rounded-md transition 
+              ${activeSection === "deleteTasks" ? "bg-blue-600 text-white" : "hover:bg-blue-100 text-gray-700"}
+            `}
+          >
+            Delete Task
+          </li>
         </ul>
       </aside>
 
       {/* ---------- Main Section ---------- */}
       <main className="flex-1 p-6">
-
         {/* Manage Users */}
         {activeSection === "manageUsers" && (
           <div>
@@ -127,56 +132,97 @@ const AdminDashboard = () => {
         )}
 
         {/* Update Task Section */}
-      {activeSection === "updateTasks" && (
-  <div className="mt-6">
+        {activeSection === "updateTasks" && (
+          <div className="mt-6">
+            <h2 className="text-3xl font-extrabold text-gray-800 mb-6 tracking-tight">
+              ✏️ Update Tasks
+            </h2>
+            {/* If no tasks found or length zero then show that message */}
+            {tasks.length === 0 ? (
+              <p className="text-gray-500 text-lg text-center py-10">
+                No tasks available.
+              </p>
+            ) : (
+              // Map all the task and list out in my ui that are fetch through axiosInstance
+              <div className="space-y-6">
+                {tasks.map((task) => (
+                  <div
+                    key={task._id}
+                    className="p-6 bg-gradient-to-br from-gray-50 to-white border border-gray-200 
+                     rounded-2xl shadow-md hover:shadow-xl transition duration-300"
+                  >
+                    {/* Header */}
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="text-xl font-bold text-gray-900">
+                        {task.title}
+                      </h3>
+                    </div>
 
+                    {/* Description */}
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                      {task.description}
+                    </p>
+
+                    {/* Task Metadata if the task assigned to the member then it shows that member email id otherwide not assigned*/}
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <p>
+                        <strong className="text-gray-800">Assigned To:</strong>{" "}
+                        {task.assignedTo ? (
+                          <span className="text-blue-700 font-semibold">
+                            {task.assignedTo.name} ({task.assignedTo.email})
+                          </span>
+                        ) : (
+                          <span className="italic text-gray-500">
+                            Not assigned
+                          </span>
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Update Button */}
+                    {/* During Update First Fetch All the tasks after update task fetch the new updated task */}
+                    <div className="mt-5 flex justify-end">
+                      <UpdateTask
+                        taskId={task._id}
+                        task={task}
+                        refreshTasks={fetchTasks}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        {/* Delete Task Section */}
+{activeSection === "deleteTasks" && (
+  <div className="mt-6">
     <h2 className="text-3xl font-extrabold text-gray-800 mb-6 tracking-tight">
-      ✏️ Update Tasks
+      🗑 Delete Tasks
     </h2>
-        {/* If no tasks found or length zero then show that message */}
+
     {tasks.length === 0 ? (
       <p className="text-gray-500 text-lg text-center py-10">
         No tasks available.
       </p>
-      // Map all the task and list out in my ui that are fetch through axiosInstance 
+      // Map and list out all the task and task details
     ) : (
       <div className="space-y-6">
         {tasks.map((task) => (
           <div
             key={task._id}
-            className="p-6 bg-gradient-to-br from-gray-50 to-white border border-gray-200 
-                     rounded-2xl shadow-md hover:shadow-xl transition duration-300"
+            className="p-6 bg-white border border-gray-200 rounded-2xl shadow-md 
+                       hover:shadow-lg transition duration-300"
           >
-            {/* Header */}
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xl font-bold text-gray-900">{task.title}</h3>
-            </div>
+            <h3 className="text-xl font-bold text-gray-900">{task.title}</h3>
 
-            {/* Description */}
             <p className="text-gray-700 text-sm leading-relaxed mb-4">
               {task.description}
             </p>
 
-            {/* Task Metadata if the task assigned to the member then it shows that member email id otherwide not assigned*/}
-            <div className="text-sm text-gray-600 space-y-1">
-              <p>
-                <strong className="text-gray-800">Assigned To:</strong>{" "}
-                {task.assignedTo ? (
-                  <span className="text-blue-700 font-semibold">
-                    {task.assignedTo.name} ({task.assignedTo.email})
-                  </span>
-                ) : (
-                  <span className="italic text-gray-500">Not assigned</span>
-                )}
-              </p>
-            </div>
-
-            {/* Update Button */}
-            {/* During Update First Fetch All the tasks after update task fetch the new updated task */}
-            <div className="mt-5 flex justify-end">
-              <UpdateTask
+            <div className="mt-4 flex justify-end">
+              <DeleteTask
                 taskId={task._id}
-                task={task}
                 refreshTasks={fetchTasks}
               />
             </div>
@@ -186,9 +232,7 @@ const AdminDashboard = () => {
     )}
   </div>
 )}
-
       </main>
-
     </div>
   );
 };
