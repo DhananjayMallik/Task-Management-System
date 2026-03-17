@@ -14,7 +14,7 @@ import OTP from '../models/Otp.js'
 import otpGenerator from 'otp-generator'
 import mailSender from '../utilies/mailSender.js'
 // logic for sending otp into my email
-export const sendOtp = async (req, res, next) => {
+export const sendOtp = async (req, res) => {
   try {
     // 1. fetch email -->
     const { email } = req.body
@@ -51,7 +51,6 @@ export const sendOtp = async (req, res, next) => {
       success: true,
       message: 'OTP sent successfully',
     })
-    next()
   } catch (error) {
     console.log('OTP Error:', error)
     return res.status(500).json({
@@ -62,7 +61,6 @@ export const sendOtp = async (req, res, next) => {
 }
 
 // verify that otp during login or sign up --> 
-//It is a temporary in-memory storage used to remember which users have successfully verified their OTP.
 const verifiedEmails = new Set(); // store verified emails
 
 export const verifyotp = async (req, res) => {

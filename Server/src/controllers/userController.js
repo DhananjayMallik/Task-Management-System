@@ -25,7 +25,7 @@ export const registerUser = async (req, res) => {
     if (!verifiedEmails.has(email)) {
       return res.status(400).json({
         success: false,
-        message: " Please verify OTP before registering ",
+        message: "Please verify OTP before registering ",
       });
     }
     // check if user exists

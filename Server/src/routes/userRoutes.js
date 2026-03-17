@@ -4,7 +4,7 @@ import {authMiddleware} from '../middleware/authMiddleware.js';
 import{adminOnly} from '../middleware/adminMiddleware.js';
 import {sendOtp, verifyotp} from '../controllers/OtpController.js'
 const router = express.Router();
-// first register user schema validation then post the user details
+// Registration successfull after OTP verification
 router.post('/register',registerUser);
 router.post('/login',loginUser);
 // login in user details through token verification 

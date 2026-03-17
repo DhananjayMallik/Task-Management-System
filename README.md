@@ -3,6 +3,7 @@ A full-stack role-based Task Management System where **Admin** manages users & t
 
 This project includes:
 - User Authentication (Register/Login)
+- OTP Verification System  (Verify -> Register Successfull)
 - Role-based Authorization (Admin / Member)
 - Admin Dashboard
 - Member Dashboard
@@ -11,9 +12,13 @@ This project includes:
 
 ---
 ## Screenshots 
+## login Page
 ![alt text](<Screenshot 2026-02-13 173654.png>)
+## SignUp Page
 ![alt text](<Screenshot 2026-02-13 173638.png>)
+## Not Found Page
 ![alt text](<Screenshot 2026-03-10 152810-1.png>)
+
 ![alt text](<Screenshot 2026-03-10 153321-1.png>)
 ![alt text](<Screenshot 2026-03-10 153513-1.png>)
 ![alt text](<Screenshot 2026-03-10 163832-1.png>)
