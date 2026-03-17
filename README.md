@@ -39,6 +39,7 @@ This project includes:
 
 ### 🔐 Authentication
 - User Registration
+- OTP Verification System
 - Login with Email & Password
 - JWT-based Authentication
 - Role-based Authorization (Admin / Member)
