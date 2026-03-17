@@ -1,17 +1,19 @@
 // Here we write our user function like -> signUp , Login , getUser, updateUser and so on
 
 /* User Functionality : Register a New User When Enter the website in the first time 
-    1 : User Register first -> 
-    2 : require the details(name , email , password , role) --> 
-    3 : check user already exist or not --> 
-    4 : if not -> create user -->
-    5 : then show user registered successful-->
-    6 : othewise->show user already exist 
-    */
+1: User Enter Registration details ->
+2: Request Otp (via email) ->
+3: Otp Sending Successfull ->
+4: Verify that Otp ->
+5: if is valid otp -> compare it with store otp with my dataBase if match SignUpSuccessfull ->
+6: create new user
+7: if not valid -> please try again
+*/
 import User from '../models/User.js'
 import bcrypt from 'bcrypt'
 import { loginSchema, registerSchema } from '../validation/UserValidation.js'
 import jwt from 'jsonwebtoken'
+import {verifiedEmails} from '../controllers/OtpController.js';
 
 export const registerUser = async (req, res) => {
   try {
@@ -19,7 +21,13 @@ export const registerUser = async (req, res) => {
     await registerSchema.validate({ body: req.body }, { abortEarly: false })
 
     const { name, email, password, role } = req.body
-
+      // NEW — Check OTP verification
+    if (!verifiedEmails.has(email)) {
+      return res.status(400).json({
+        success: false,
+        message: " Please verify OTP before registering ",
+      });
+    }
     // check if user exists
     const existUser = await User.findOne({ email })
     if (existUser) {

@@ -2,7 +2,7 @@ import express from 'express';
 import {registerUser,loginUser,AdminUpdateUser,deleteUser, ViewUser} from '../controllers/userController.js';
 import {authMiddleware} from '../middleware/authMiddleware.js';
 import{adminOnly} from '../middleware/adminMiddleware.js';
-import {sendOtp} from '../controllers/OtpController.js'
+import {sendOtp, verifyotp} from '../controllers/OtpController.js'
 const router = express.Router();
 // first register user schema validation then post the user details
 router.post('/register',registerUser);
@@ -31,4 +31,6 @@ router.delete('/delete/:id', authMiddleware, adminOnly, deleteUser);
 router.get("/all-users", authMiddleware, adminOnly, ViewUser);
 
 router.post('/send-otp' , sendOtp); // for otp generate
+// verify otp
+router.post('/verify-otp',verifyotp);
 export default router;
