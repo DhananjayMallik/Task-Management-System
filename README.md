@@ -113,7 +113,8 @@ Delete Task
 - MongoDB + Mongoose
 - JWT Authentication
 - Yup/ for Validation
-
+- otp-Generator for generating otp
+- nodemailer for sending otp via email
 ### **Frontend** (optional)
 - React.js
 - Axios
@@ -126,7 +127,10 @@ Delete Task
 
 ### 🔐 Authentication
 | Method | Endpoint       | Description |
+
 |--------|----------------|-------------|
+| POST   | `/api/send-otp` | Before Register a new user |
+| POST   | `/api/verify-otp` |Before Register a new user |
 | POST   | `/api/register` | Register a new user |
 | POST   | `/api/login`    | Login user |
 
@@ -163,5 +167,7 @@ npm install
 MONGO_URI=your_mongo_url
 JWT_SECRET=your_jwt_secret
 PORT
+EMAIL - for sending otp from which email
+PASSWORD - use google password
 npm run dev for vite
 npm start without vite
