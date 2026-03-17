@@ -2,40 +2,87 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import image from "../../assets/images/Home1.jpg";
+
 const SignUp = () => {
-  // here we list out all the information related to user Registration
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  // for store otp 
+  const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  // for sending otp
+  const [otpSent, setOtpSent] = useState(false);
+  // for verifying otp
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+
   const navigate = useNavigate();
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    if (!name || !email || !password || !role) {
-      alert("All the Fields are required");
+
+  // -------------------- SEND OTP --------------------
+  const handleSendOtp = async () => {
+    if (!email) {
+      alert("Enter email to send OTP");
       return;
     }
+
     try {
-      const res = await axiosInstance.post("/user/register", {
+      // send otp via email
+      const res = await axiosInstance.post("/user/send-otp", { email });
+      alert(res.data.message || "OTP Sent!");
+      setOtpSent(true);
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to send OTP");
+    }
+  };
+
+  // -------------------- VERIFY OTP --------------------
+  const handleVerifyOtp = async () => {
+    try {
+      const res = await axiosInstance.post("/user/verify-otp", {
+        email,
+        otp,
+      });
+
+      alert(res.data.message || "OTP Verified!");
+      setIsOtpVerified(true);
+    } catch (error) {
+      alert(error.response?.data?.message || "OTP Verification Failed");
+    }
+  };
+
+  // <-------------------- REGISTER -------------------->
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    if (!isOtpVerified) {
+      alert("Please verify OTP before registering!");
+      return;
+    }
+
+    if (!name || !email || !password || !role) {
+      alert("All fields are required");
+      return;
+    }
+
+    try {
+      await axiosInstance.post("/user/register", {
         name,
         email,
         password,
         role,
       });
-      console.log(res);
-      alert("Register Successfull🫂🫂");
+
+      alert("Registered Successfully!");
       navigate("/login");
     } catch (error) {
-      console.log(error);
-      alert(error.response?.data?.message || "Signup Failed");
+      alert(error.response?.data?.message || "Registration Failed");
     }
   };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${image})` }}
     >
-      {/* Glassmorphism Card */}
       <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md border border-white/30">
         <h2 className="text-center text-white text-3xl font-bold mb-6 drop-shadow-md">
           Register New User
@@ -48,17 +95,54 @@ const SignUp = () => {
             placeholder="Enter Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
+            className="w-full px-4 py-2 border rounded-lg bg-white/70"
           />
 
           {/* Email */}
-          <input
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
-          />
+          <div className="flex gap-2">
+            <input
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg bg-white/70"
+            />
+
+            <button
+              type="button"
+              onClick={handleSendOtp}
+              className="px-4 bg-blue-600 text-white rounded-lg"
+            >
+              Send OTP
+            </button>
+          </div>
+
+          {/* OTP Field - Shown ONLY when OTP sent AND not verified */}
+          {otpSent && !isOtpVerified && (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Enter OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg bg-white/70"
+              />
+              <button
+                type="button"
+                onClick={handleVerifyOtp}
+                className="px-4 bg-green-600 text-white rounded-lg"
+              >
+                Verify
+              </button>
+            </div>
+          )}
+
+          {/* OTP Verified Message */}
+          {isOtpVerified && (
+            <p className="text-green-700 font-semibold text-center">
+              ✅ Email Verified Successfully!
+            </p>
+          )}
 
           {/* Password */}
           <input
@@ -66,24 +150,30 @@ const SignUp = () => {
             placeholder="Enter Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
+            className="w-full px-4 py-2 border rounded-lg bg-white/70"
           />
 
           {/* Role */}
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg bg-white/70 text-gray-700 focus:ring-2 focus:ring-blue-400 outline-none"
+            className="w-full px-4 py-2 border rounded-lg bg-white/70"
           >
             <option value="">Select Role</option>
             <option value="admin">Admin</option>
             <option value="member">Member</option>
           </select>
 
-          {/* Button */}
+          {/* Register Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-md"
+            disabled={!isOtpVerified}
+            className={`w-full py-2 rounded-lg text-lg font-semibold transition shadow-md
+              ${
+                isOtpVerified
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-400 text-gray-300 cursor-not-allowed"
+              }`}
           >
             Sign Up
           </button>
