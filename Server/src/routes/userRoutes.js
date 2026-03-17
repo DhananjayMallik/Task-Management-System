@@ -2,7 +2,7 @@ import express from 'express';
 import {registerUser,loginUser,AdminUpdateUser,deleteUser, ViewUser} from '../controllers/userController.js';
 import {authMiddleware} from '../middleware/authMiddleware.js';
 import{adminOnly} from '../middleware/adminMiddleware.js';
-
+import {sendOtp} from '../controllers/OtpController.js'
 const router = express.Router();
 // first register user schema validation then post the user details
 router.post('/register',registerUser);
@@ -29,4 +29,6 @@ router.put('/update-User/:id',authMiddleware , adminOnly , AdminUpdateUser);
 router.delete('/delete/:id', authMiddleware, adminOnly, deleteUser);
 // Only Admin Can view All the user
 router.get("/all-users", authMiddleware, adminOnly, ViewUser);
+
+router.post('/send-otp' , sendOtp); // for otp generate
 export default router;
