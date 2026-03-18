@@ -7,12 +7,11 @@ import AdminDashboard from "../page/Admin/AdminDashboard";
 import UpdateUser from "../page/Admin/UpdateUser";
 import MemberDashboard from "../page/Member/MemberDashboard";
 import NotFound from "../page/Member/NotFound";
+import Home from "../components/Home";
 const AppRoutes = () => {
   return (
     <Routes>
-
-      {/* Default: Go to Signup first */}
-      <Route path="/" element={<Navigate to="/signup" />} />
+      <Route path="/" element={<Home />} />
 
       {/* Login / SignUp */}
       <Route path="/login" element={<Login />} />
@@ -29,7 +28,6 @@ const AppRoutes = () => {
       />
 
       {/* Admin Manage Users */}
-     
 
       {/* Admin Update User */}
       <Route
@@ -50,7 +48,7 @@ const AppRoutes = () => {
           </ProtectedRoutes>
         }
       />
- <Route path="*" element={<NotFound/>}/>
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

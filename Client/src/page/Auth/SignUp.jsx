@@ -17,7 +17,7 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-  // -------------------- SEND OTP --------------------
+  // Handle our sending otp 
   const handleSendOtp = async () => {
     if (!email) {
       alert("Enter email to send OTP");
@@ -25,7 +25,7 @@ const SignUp = () => {
     }
 
     try {
-      // send otp via email
+      // send otp via mail
       const res = await axiosInstance.post("/user/send-otp", { email });
       alert(res.data.message || "OTP Sent!");
       setOtpSent(true);
@@ -33,8 +33,7 @@ const SignUp = () => {
       alert(error.response?.data?.message || "Failed to send OTP");
     }
   };
-
-  // -------------------- VERIFY OTP --------------------
+// After Sending OTP We need to verify that otp
   const handleVerifyOtp = async () => {
     try {
       const res = await axiosInstance.post("/user/verify-otp", {
@@ -49,10 +48,10 @@ const SignUp = () => {
     }
   };
 
-  // <-------------------- REGISTER -------------------->
+  // For Registering new user 
   const handleSignup = async (e) => {
     e.preventDefault();
-
+    // check otp verify or not
     if (!isOtpVerified) {
       alert("Please verify OTP before registering!");
       return;
