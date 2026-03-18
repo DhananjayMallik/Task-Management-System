@@ -1,15 +1,6 @@
-# Node
 node_modules/
-
-# Build folders
-dist/
 build/
-
-# Environment variables
+dist/
 .env
-
-# Logs
 *.log
-
-# System
 .DS_Store
