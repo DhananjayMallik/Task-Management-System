@@ -7,11 +7,11 @@ import AdminDashboard from "../page/Admin/AdminDashboard";
 import UpdateUser from "../page/Admin/UpdateUser";
 import MemberDashboard from "../page/Member/MemberDashboard";
 import NotFound from "../page/Member/NotFound";
-import Home from "../components/Home";
+// import Home from "../components/Home";
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Navigate to="/signup" />} />
 
       {/* Login / SignUp */}
       <Route path="/login" element={<Login />} />

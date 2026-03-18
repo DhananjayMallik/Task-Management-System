@@ -1,13 +1,35 @@
-/* Here we write our base api url in the whole project and also add token (from localStorage)token from localstorage */
+// /* Here we write our base api url in the whole project and also add token (from localStorage)token from localstorage */
+
+// import axios from "axios";
+
+// const axiosInstance = axios.create({
+//   baseURL: "http://localhost:4000/api",
+// });
+
+// axiosInstance.interceptors.request.use((config) => {
+
+//   const token = localStorage.getItem("token");
+
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+
+//   return config;
+
+// });
+
+// export default axiosInstance;
+/* Here we write our base api url in the whole project and also add token (from localStorage) */
 
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: import.meta.env.VITE_BACKEND_URL 
+    ? `${import.meta.env.VITE_BACKEND_URL}/api`
+    : "http://localhost:4000/api",
 });
 
 axiosInstance.interceptors.request.use((config) => {
-
   const token = localStorage.getItem("token");
 
   if (token) {
@@ -15,7 +37,6 @@ axiosInstance.interceptors.request.use((config) => {
   }
 
   return config;
-
 });
 
 export default axiosInstance;
