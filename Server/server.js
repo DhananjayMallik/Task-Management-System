@@ -12,7 +12,7 @@ app.use(
   cors({
     origin: [
       "https://task-management-system-backend-pdqj.onrender.com", // ❌ not needed
-      "https://task-management-frontend-blrv.onrender.com",        // ✅ frontend URL
+      "https://task-management-system-frontendside.onrender.com",        // ✅ frontend URL
       "http://localhost:5173",                                     // for local dev
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
