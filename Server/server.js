@@ -11,7 +11,10 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",],
+      "https://task-management-system-backend-pdqj.onrender.com", // ❌ not needed
+      "https://task-management-frontend-blrv.onrender.com",        // ✅ frontend URL
+      "http://localhost:5173",                                     // for local dev
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
