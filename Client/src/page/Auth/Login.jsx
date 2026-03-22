@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import image from "../../assets/images/first.jpg";
+import bgImage from "../../assets/images/Home1.jpg";
+import logo from "../../assets/images/landinglogo.jpg";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,72 +19,93 @@ const Login = () => {
       return;
     }
     try {
-      const res = await axiosInstance.post("/user/login", {
-        email,
-        password,
-      });
-      // sent it to the authcontext hook to save token and role into localStorage
-      // inside handleLogin in Login.jsx
-      const { token, user } = res.data;
+      const res = await axiosInstance.post("/user/login", { email, password });
 
-      // Save into AuthContext
+      const { token, user } = res.data;
       loginUser(token, user.role, user);
 
-      // role based login system
-      if (res.data.role == "admin") navigate("/admin-dashboard");
+      if (user.role === "admin") navigate("/admin-dashboard");
       else navigate("/member-dashboard");
+
     } catch (error) {
       console.log(error);
-      // Redirect to NotFound page on login fail
       navigate("/NotFound");
     }
   };
+
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${image})` }}
+      className="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${bgImage})` }}
     >
-      {/* Glassmorphism Card */}
-      <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md border border-white/30">
-        <h2 className="text-center text-white text-3xl font-bold mb-6 drop-shadow-md">
-          Login
-        </h2>
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          {/* Email */}
-          <input
-            type="email"
-            placeholder="Enter Email"
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
+      {/* NAVBAR */}
+      <header className="bg-white/90 backdrop-blur-md shadow px-6 py-4 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3">
+          <img
+            src={logo}
+            alt="Task Master Pro"
+            className="w-12 h-12 object-cover rounded-full shadow"
           />
+          <h1 className="text-2xl font-bold text-gray-800 tracking-wide">
+            Task Master Pro
+          </h1>
+        </Link>
 
-          {/* Password */}
-          <input
-            type="password"
-            placeholder="Enter Password"
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-
-          {/* Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-md"
+        <div className="flex items-center gap-4">
+          <Link
+            to="/login"
+            className="px-4 py-2 text-gray-700 font-semibold hover:text-green-600 transition"
           >
             Login
-          </button>
-        </form>
+          </Link>
 
-        <p className="mt-4 text-center text-white drop-shadow-md">
-          Don't have an account?{" "}
-          <a
-            href="/signup"
-            className="text-yellow-300 font-semibold hover:underline"
+          <Link
+            to="/signup"
+            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 shadow transition"
           >
             Sign Up
-          </a>
-        </p>
+          </Link>
+        </div>
+      </header>
+
+      {/* CENTERED LOGIN CARD */}
+      <div className="flex justify-center items-center flex-1 px-4">
+        <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md border border-white/30">
+          
+          <h2 className="text-center text-white text-3xl font-bold mb-6 drop-shadow-md">
+            Login
+          </h2>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Enter Email"
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
+            />
+
+            <input
+              type="password"
+              placeholder="Enter Password"
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg bg-white/70 focus:ring-2 focus:ring-blue-400 outline-none"
+            />
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-md"
+            >
+              Login
+            </button>
+          </form>
+
+          <p className="mt-4 text-center text-white drop-shadow-md">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-yellow-300 font-semibold hover:underline">
+              Sign Up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
