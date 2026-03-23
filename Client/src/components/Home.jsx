@@ -4,14 +4,17 @@ import image1 from "../assets/images/hero.png";
 import image3 from "../assets/images/heroban.png";
 import image4 from "../assets/images/mediacontent.png";
 import image5 from "../assets/images/register.png";
-import image6 from '../assets/images/login.png'
+import image6 from "../assets/images/login.png";
+import image7 from '../assets/images/processstage.webp';
 const Home = () => {
   const navigate = useNavigate();
 
   const handleclick = () => {
     navigate("/signup");
   };
-
+  const handleconnect = () => {
+    navigate("/login");
+  };
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* NAVBAR */}
@@ -154,7 +157,6 @@ const Home = () => {
       {/* Task Master Registration  */}
       {/* Section 1 */}
       <div className="flex flex-col lg:flex-row items-center justify-between mt-10 px-6 lg:px-16 gap-12">
-
         {/* LEFT IMAGE */}
         <div className="w-full lg:w-1/2 flex justify-center lg:justify-start">
           <img
@@ -169,8 +171,9 @@ const Home = () => {
           <p className="text-gray-700 text-lg leading-relaxed">
             When it comes down to choosing task management software, all you
             need is three things. Coincidentally, that’s exactly what you get
-            from <span className="font-semibold text-blue-600">Task Master Pro</span> —
-            task management software that’s easy to use and features dozens of
+            from{" "}
+            <span className="font-semibold text-blue-600">Task Master Pro</span>{" "}
+            — task management software that’s easy to use and features dozens of
             collaboration tools.
           </p>
 
@@ -183,22 +186,21 @@ const Home = () => {
         </div>
       </div>
 
-
       {/* Section 2 — reversed layout */}
       <div className="flex flex-col-reverse lg:flex-row items-center justify-between mt-16 px-6 lg:px-16 gap-12">
-
         {/* RIGHT TEXT */}
         <div className="w-full lg:w-1/2 text-center lg:text-left">
           <p className="text-gray-700 text-lg leading-relaxed">
             When it comes down to choosing task management software, all you
             need is three things. Coincidentally, that’s exactly what you get
-            from <span className="font-semibold text-blue-600">Task Master Pro</span> —
-            task management software that’s easy to use and features dozens of
+            from{" "}
+            <span className="font-semibold text-blue-600">Task Master Pro</span>{" "}
+            — task management software that’s easy to use and features dozens of
             collaboration tools.
           </p>
 
           <button
-            onClick={handleclick}
+            onClick={handleconnect}
             className="bg-blue-500 py-3 md:py-4 px-8 md:px-10 text-lg md:text-xl mt-6 text-white rounded-full hover:bg-blue-600 transition cursor-pointer mb-4"
           >
             Connect With Us
@@ -215,9 +217,34 @@ const Home = () => {
         </div>
       </div>
       {/*Processing stage */}
-      <div>
-        
+      <div className="w-24 md:w-32 h-1 mx-auto rounded-full bg-gradient-to-r from-blue-400 to-blue-600 mt-20"></div>
+      <div className="flex flex-col items-center justify-center mt-5 px-6 lg:px-16">
+
+        <h5 className="text-center font-extralight 
+                 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+          Trusted by over <span className="text-blue-400">15,000,000</span><br />
+          teams worldwide
+        </h5>
+
+        <button
+          onClick={handleclick}
+          className="bg-blue-500 py-3 md:py-4 px-8 md:px-10 
+               text-lg md:text-xl mt-9 text-white rounded-full 
+               hover:bg-blue-600 transition cursor-pointer"
+        >
+          Get Started
+        </button>
+
+        <div className="flex justify-center mt-10 w-full">
+          <img
+            src={image7}
+            alt="Trusted Teams"
+            className="max-w-5xl w-full object-contain rounded-3xl"
+          />
+        </div>
+
       </div>
+      
     </div>
   );
 };
