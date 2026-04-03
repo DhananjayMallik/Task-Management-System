@@ -219,10 +219,12 @@ const Home = () => {
       {/*Processing stage */}
       <div className="w-24 md:w-32 h-1 mx-auto rounded-full bg-gradient-to-r from-blue-400 to-blue-600 mt-20"></div>
       <div className="flex flex-col items-center justify-center mt-5 px-6 lg:px-16">
-
-        <h5 className="text-center font-extralight 
-                 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
-          Trusted by over <span className="text-blue-400">15,000,000</span><br />
+        <h5
+          className="text-center font-extralight 
+                 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight"
+        >
+          Trusted by over <span className="text-blue-400">15,000,000</span>
+          <br />
           teams worldwide
         </h5>
 
@@ -242,9 +244,11 @@ const Home = () => {
             className="max-w-5xl w-full object-contain rounded-3xl"
           />
         </div>
-
       </div>
+      {/* Footer Section */}
       
+<div className="w-24 md:w-32 h-1 mx-auto rounded-full bg-gradient-to-r from-blue-400 to-blue-600 mt-20"></div>
+
     </div>
   );
 };
