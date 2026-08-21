@@ -10,96 +10,151 @@ Here the step otp verification/generator or send otp into your mail
 4	Send OTP via email using Nodemailer --> because of that we will send otp via email that's why we need nodemailer
 5	Verify OTP later (check email + OTP match and not expired)
 */
-import OTP from '../models/Otp.js'
-import otpGenerator from 'otp-generator'
-import mailSender from '../utilies/mailSender.js'
-// logic for sending otp into my email
+import OTP from "../models/Otp.js";
+import otpGenerator from "otp-generator";
+import mailSender from "../utilies/mailSender.js";
+
+// Store verified emails
+const verifiedEmails = new Set();
+
+// ==========================================
+// SEND OTP
+// ==========================================
 export const sendOtp = async (req, res) => {
   try {
-    // 1. fetch email -->
-    const { email } = req.body
-    // validation email is exist or not
+    const { email } = req.body;
+
     if (!email) {
       return res.status(400).json({
         success: false,
-        message: 'Email is required',
-      })
+        message: "Email is required",
+      });
     }
-    // remove old OTP
-    await OTP.deleteMany({ email })
-    // 2. generate otp through otpGenerator -->
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Remove previous OTP
+    await OTP.deleteMany({ email: cleanEmail });
+
+    // Generate OTP
     const otp = otpGenerator.generate(6, {
       digits: true,
       upperCaseAlphabets: false,
       lowerCaseAlphabets: false,
       specialChars: false,
-    })
+    });
 
-    // 3. save that generating otp into my dataBase -->
-    const otpBody = await OTP.create({ email, otp })
+    // Save OTP
+    await OTP.create({
+      email: cleanEmail,
+      otp,
+    });
 
-    // 4. send that otp via mail id -->
-    const mailResponse = await mailSender(
-      email, // in which mail id i will send the otp
-      'Verification Email',
-      `<h3>Confirm Email</h3>
-       <p>Your OTP is: <b>${otp}</b></p>`
-    )
-    console.log(`Mail Response : ${mailResponse.response}`)
-    // 5. response
+    console.log("================================");
+    console.log("OTP CREATED");
+    console.log("Email:", cleanEmail);
+    console.log("OTP:", otp);
+    console.log("================================");
+
+    // Send email
+    try {
+      const mailResponse = await mailSender(
+        cleanEmail,
+        "Verification Email",
+        `
+          <div style="font-family: Arial, sans-serif;">
+            <h2>Task Master Pro - Email Verification</h2>
+            <p>Your OTP is:</p>
+            <h1>${otp}</h1>
+            <p>This OTP is valid for verification.</p>
+          </div>
+        `
+      );
+
+      console.log("EMAIL SENT SUCCESSFULLY");
+      console.log("Mail Response:", mailResponse?.response);
+
+    } catch (mailError) {
+      console.error("EMAIL SENDING ERROR:", mailError);
+
+      // OTP is already in database.
+      // Tell frontend that email sending failed.
+      return res.status(500).json({
+        success: false,
+        message:
+          "OTP generated but email could not be sent. Please try again.",
+      });
+    }
+
     return res.status(200).json({
       success: true,
-      message: 'OTP sent successfully',
-    })
+      message: "OTP sent successfully. Please check your email.",
+    });
+
   } catch (error) {
-    console.log('OTP Error:', error)
+    console.error("OTP ERROR:", error);
+
     return res.status(500).json({
       success: false,
-      message: 'Failed to send OTP',
-    })
+      message: "Failed to send OTP",
+    });
   }
-}
+};
 
-// verify that otp during login or sign up --> 
-const verifiedEmails = new Set(); // store verified emails
-
+// ==========================================
+// VERIFY OTP
+// ==========================================
 export const verifyotp = async (req, res) => {
   try {
-    // fetch otp with email ->
     const { email, otp } = req.body;
 
-    // 1. Check OTP exists
-    const otpRecord = await OTP.findOne({ email });
+    if (!email || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and OTP are required",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Find OTP
+    const otpRecord = await OTP.findOne({
+      email: cleanEmail,
+    });
 
     if (!otpRecord) {
-      return res.status(401).json({
+      return res.status(404).json({
         success: false,
         message: "OTP not found or expired",
       });
     }
 
-    // 2. Validate OTP --> 
-    if (otpRecord.otp !== otp) {
-      return res.status(402).json({
+    // Compare OTP
+    if (otpRecord.otp !== otp.trim()) {
+      return res.status(400).json({
         success: false,
         message: "Invalid OTP. Please try again",
       });
     }
 
-    // 3. Mark email as verified
-    verifiedEmails.add(email);
+    // Mark verified
+    verifiedEmails.add(cleanEmail);
 
-    // 4. Delete OTP from database
-    // await OTP.deleteOne({ email });
+    // Delete OTP after successful verification
+    await OTP.deleteOne({
+      _id: otpRecord._id,
+    });
 
-    // return response after validate -->
+    console.log("OTP VERIFIED:", cleanEmail);
+
     return res.status(200).json({
       success: true,
       message: "OTP Verified Successfully",
     });
 
   } catch (error) {
-    console.log("OTP Error:", error);
+    console.error("VERIFY OTP ERROR:", error);
+
     return res.status(500).json({
       success: false,
       message: "Failed to verify OTP",
