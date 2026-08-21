@@ -3,6 +3,11 @@ import { Resend } from "resend";
 
 dotenv.config();
 
+console.log(
+  "RESEND KEY EXISTS:",
+  !!process.env.RESEND_API_KEY
+);
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const mailSender = async (email, otp) => {
@@ -10,7 +15,7 @@ const mailSender = async (email, otp) => {
     console.log("Sending OTP to:", email);
 
     const { data, error } = await resend.emails.send({
-      from: "Task Management System <onboarding@resend.dev>",
+      from: "Task Management System <noreply@dhananjaymallik.com>",
       to: [email],
       subject: "Your OTP Verification Code",
       html: `
@@ -33,27 +38,30 @@ const mailSender = async (email, otp) => {
             ${otp}
           </h1>
 
-          <p>
-            This OTP is valid for a limited time.
-          </p>
+          <p>This OTP is valid for a limited time.</p>
 
-          <p>
-            If you did not request this OTP, please ignore this email.
-          </p>
+          <p>If you did not request this OTP, please ignore this email.</p>
         </div>
       `,
     });
 
     if (error) {
-      console.error("RESEND ERROR:", error);
-      throw new Error(error.message);
+      console.error("========== RESEND ERROR ==========");
+      console.error(error);
+      console.error("==================================");
+
+      throw new Error(error.message || "Resend email failed");
     }
 
     console.log("OTP email sent successfully:", data);
 
     return data;
+
   } catch (error) {
-    console.error("MAIL SENDER ERROR:", error);
+    console.error("========== MAIL SENDER ERROR ==========");
+    console.error(error);
+    console.error("=======================================");
+
     throw error;
   }
 };
