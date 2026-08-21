@@ -25,7 +25,7 @@ const SignUp = () => {
     if (!email) return alert("Enter email to send OTP");
 
     try {
-      const res = await axiosInstance.post("https://task-management-system-6s4y.onrender.com/user/send-otp", { email });
+      const res = await axiosInstance.post("/user/send-otp", { email });
       alert(res.data.message || "OTP Sent!");
       setOtpSent(true);
     } catch (error) {
@@ -36,7 +36,7 @@ const SignUp = () => {
   // VERIFY OTP
   const handleVerifyOtp = async () => {
     try {
-      const res = await axiosInstance.post("https://task-management-system-6s4y.onrender.com/user/verify-otp", { email, otp });
+      const res = await axiosInstance.post("/user/verify-otp", { email, otp });
       alert(res.data.message || "OTP Verified!");
       setIsOtpVerified(true);
     } catch (error) {
