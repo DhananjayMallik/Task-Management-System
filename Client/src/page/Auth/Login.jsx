@@ -19,7 +19,7 @@ const Login = () => {
       return;
     }
     try {
-      const res = await axiosInstance.post("/user/login", { email, password });
+      const res = await axiosInstance.post("https://task-management-system-6s4y.onrender.com/user/login", { email, password });
 
       const { token, user } = res.data;
       loginUser(token, user.role, user);
