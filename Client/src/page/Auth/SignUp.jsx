@@ -54,7 +54,7 @@ const SignUp = () => {
       return alert("All fields are required");
 
     try {
-      await axiosInstance.post("https://task-management-system-6s4y.onrender.com/user/register", {
+      await axiosInstance.post("/user/register", {
         name,
         email,
         password,
