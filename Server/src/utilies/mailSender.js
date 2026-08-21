@@ -1,30 +1,61 @@
-// here we send our otp through mail id
-// we write the logic from otp mailSender
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import { Resend } from "resend";
 
 dotenv.config();
-// here we receive information  otp via mail 
-const mailSender = async(email , title , body) => {
-    // create Transporter --> as because of that nodemailer don't know where and how to send the mail and connect to the mail server
-    const transporter = nodemailer.createTransport({
-        service : 'gmail', // which email service you used like(outlook , gmail,yahoo..)
-        auth : { // how you authenticate
-            user : process.env.EMAIL,
-            pass : process.env.PASSWORD
-        }
-    })
-    // how to send mail 
-     const mailOptions = {
-        from : process.env.EMAIL,
-        to : email,
-        subject : title,
-        html : body
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const mailSender = async (email, otp) => {
+  try {
+    console.log("Sending OTP to:", email);
+
+    const { data, error } = await resend.emails.send({
+      from: "Task Management System <onboarding@resend.dev>",
+      to: [email],
+      subject: "Your OTP Verification Code",
+      html: `
+        <div style="
+          font-family: Arial, sans-serif;
+          max-width: 500px;
+          margin: auto;
+          padding: 30px;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+        ">
+          <h2>OTP Verification</h2>
+
+          <p>Your verification OTP is:</p>
+
+          <h1 style="
+            letter-spacing: 8px;
+            text-align: center;
+          ">
+            ${otp}
+          </h1>
+
+          <p>
+            This OTP is valid for a limited time.
+          </p>
+
+          <p>
+            If you did not request this OTP, please ignore this email.
+          </p>
+        </div>
+      `,
+    });
+
+    if (error) {
+      console.error("RESEND ERROR:", error);
+      throw new Error(error.message);
     }
-    console.log(mailOptions);
-    // response
-    const info = await transporter.sendMail(mailOptions);
-    console.log(`Email Sent: ${info.response}`);
-    return info; 
-}
+
+    console.log("OTP email sent successfully:", data);
+
+    return data;
+  } catch (error) {
+    console.error("MAIL SENDER ERROR:", error);
+    throw error;
+  }
+};
+
 export default mailSender;

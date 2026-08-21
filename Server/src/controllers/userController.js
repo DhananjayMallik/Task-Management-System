@@ -13,7 +13,7 @@ import User from '../models/User.js'
 import bcrypt from 'bcrypt'
 import { loginSchema, registerSchema } from '../validation/UserValidation.js'
 import jwt from 'jsonwebtoken'
-import {verifiedEmails} from '../controllers/OtpController.js';
+import { verifiedEmails } from '../controllers/OtpController.js';
 
 export const registerUser = async (req, res) => {
   try {

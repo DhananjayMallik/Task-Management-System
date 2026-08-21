@@ -10,16 +10,20 @@ Here the step otp verification/generator or send otp into your mail
 4	Send OTP via email using Nodemailer --> because of that we will send otp via email that's why we need nodemailer
 5	Verify OTP later (check email + OTP match and not expired)
 */
-import OTP from "../models/Otp.js";
 import otpGenerator from "otp-generator";
 import mailSender from "../utilies/mailSender.js";
 
 // Store verified emails
-const verifiedEmails = new Set();
+export const verifiedEmails = new Set();
+
+// Temporary OTP storage
+const otpStore = new Map();
+
 
 // ==========================================
 // SEND OTP
 // ==========================================
+
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -31,79 +35,50 @@ export const sendOtp = async (req, res) => {
       });
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    console.log("Sending OTP to:", email);
 
-    // Remove previous OTP
-    await OTP.deleteMany({ email: cleanEmail });
-
-    // Generate OTP
+    // Generate 6 digit OTP
     const otp = otpGenerator.generate(6, {
       digits: true,
-      upperCaseAlphabets: false,
       lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
       specialChars: false,
     });
 
-    // Save OTP
-    await OTP.create({
-      email: cleanEmail,
-      otp,
+    console.log("Generated OTP:", otp);
+
+    // Save OTP temporarily
+    otpStore.set(email, {
+      otp: otp,
+      createdAt: Date.now(),
     });
 
-    console.log("================================");
-    console.log("OTP CREATED");
-    console.log("Email:", cleanEmail);
-    console.log("OTP:", otp);
-    console.log("================================");
+    // Send OTP through Resend
+    await mailSender(email, otp);
 
-    // Send email
-    try {
-      const mailResponse = await mailSender(
-        cleanEmail,
-        "Verification Email",
-        `
-          <div style="font-family: Arial, sans-serif;">
-            <h2>Task Master Pro - Email Verification</h2>
-            <p>Your OTP is:</p>
-            <h1>${otp}</h1>
-            <p>This OTP is valid for verification.</p>
-          </div>
-        `
-      );
-
-      console.log("EMAIL SENT SUCCESSFULLY");
-      console.log("Mail Response:", mailResponse?.response);
-
-    } catch (mailError) {
-      console.error("EMAIL SENDING ERROR:", mailError);
-
-      // OTP is already in database.
-      // Tell frontend that email sending failed.
-      return res.status(500).json({
-        success: false,
-        message:
-          "OTP generated but email could not be sent. Please try again.",
-      });
-    }
+    console.log("OTP sent successfully to:", email);
 
     return res.status(200).json({
       success: true,
-      message: "OTP sent successfully. Please check your email.",
+      message: "OTP sent successfully",
     });
 
   } catch (error) {
-    console.error("OTP ERROR:", error);
+    console.error("SEND OTP ERROR:", error);
 
     return res.status(500).json({
       success: false,
       message: "Failed to send OTP",
+      error: error.message,
     });
   }
 };
 
+
 // ==========================================
 // VERIFY OTP
 // ==========================================
+
 export const verifyotp = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -115,41 +90,48 @@ export const verifyotp = async (req, res) => {
       });
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    console.log("Verifying OTP for:", email);
 
-    // Find OTP
-    const otpRecord = await OTP.findOne({
-      email: cleanEmail,
-    });
+    const storedOTP = otpStore.get(email);
 
-    if (!otpRecord) {
-      return res.status(404).json({
+    if (!storedOTP) {
+      return res.status(400).json({
         success: false,
         message: "OTP not found or expired",
       });
     }
 
-    // Compare OTP
-    if (otpRecord.otp !== otp.trim()) {
+    // OTP expires after 5 minutes
+    const expirationTime = 5 * 60 * 1000;
+
+    if (Date.now() - storedOTP.createdAt > expirationTime) {
+      otpStore.delete(email);
+
       return res.status(400).json({
         success: false,
-        message: "Invalid OTP. Please try again",
+        message: "OTP has expired",
       });
     }
 
-    // Mark verified
-    verifiedEmails.add(cleanEmail);
+    // Check OTP
+    if (storedOTP.otp !== otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    // OTP verified
+    verifiedEmails.add(email);
 
     // Delete OTP after successful verification
-    await OTP.deleteOne({
-      _id: otpRecord._id,
-    });
+    otpStore.delete(email);
 
-    console.log("OTP VERIFIED:", cleanEmail);
+    console.log("OTP verified successfully:", email);
 
     return res.status(200).json({
       success: true,
-      message: "OTP Verified Successfully",
+      message: "OTP verified successfully",
     });
 
   } catch (error) {
@@ -157,9 +139,8 @@ export const verifyotp = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Failed to verify OTP",
+      message: "OTP verification failed",
+      error: error.message,
     });
   }
 };
-
-export { verifiedEmails };

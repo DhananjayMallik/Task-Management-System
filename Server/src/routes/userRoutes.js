@@ -2,7 +2,7 @@ import express from 'express';
 import {registerUser,loginUser,AdminUpdateUser,deleteUser, ViewUser} from '../controllers/userController.js';
 import {authMiddleware} from '../middleware/authMiddleware.js';
 import{adminOnly} from '../middleware/adminMiddleware.js';
-import {sendOtp, verifyotp} from '../controllers/OtpController.js'
+import { sendOtp, verifyotp } from '../controllers/OtpController.js'
 const router = express.Router();
 // Registration successfull after OTP verification
 router.post('/register',registerUser);
