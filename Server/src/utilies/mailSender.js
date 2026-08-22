@@ -15,7 +15,7 @@ const mailSender = async (email, otp) => {
     console.log("Sending OTP to:", email);
 
     const { data, error } = await resend.emails.send({
-      from: "Task Management System <noreply@dhananjaymallik.com>",
+       from: "Task Management System <onboarding@resend.dev>",
       to: [email],
       subject: "Your OTP Verification Code",
       html: `

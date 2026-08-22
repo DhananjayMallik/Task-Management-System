@@ -37,7 +37,6 @@ export const sendOtp = async (req, res) => {
 
     console.log("Sending OTP to:", email);
 
-    // Generate 6 digit OTP
     const otp = otpGenerator.generate(6, {
       digits: true,
       lowerCaseAlphabets: false,
@@ -47,14 +46,14 @@ export const sendOtp = async (req, res) => {
 
     console.log("Generated OTP:", otp);
 
-    // Save OTP temporarily
+    // Send email first
+    await mailSender(email, otp);
+
+    // Store OTP only after successful email
     otpStore.set(email, {
-      otp: otp,
+      otp,
       createdAt: Date.now(),
     });
-
-    // Send OTP through Resend
-    await mailSender(email, otp);
 
     console.log("OTP sent successfully to:", email);
 
